@@ -1,831 +1,1314 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="Connect to Amish Singh and join his endeavors">
-    <meta name="author" content="Devcrud">
-    <title>Amish's Portfolio</title>
-    <!-- font icons -->
-    <link rel="stylesheet" href="public_html/assets/vendors/themify-icons/css/themify-icons.css">
-    <!-- Bootstrap + JohnDoe main styles -->
-	<link rel="stylesheet" href="public_html/assets/css/johndoe.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Amish Singh — Backend & Data Engineer</title>
+<style>
+/* ─── TOKENS — BRIGHT DEFAULT ───────────────────── */
+:root{
+  --bg:#FAFAF2;
+  --bg2:#F2EDE0;
+  --text:#0A0A0A;
+  --muted:#706B60;
+  --faint:rgba(10,10,10,.05);
+  --line:rgba(10,10,10,.1);
+  --accent:#FFD000;
+  --accent2:#FF3355;
+  --green:#00C96A;
+  --r:3px;
+}
+[data-theme="dark"]{
+  --bg:#0A0A10;
+  --bg2:#0F0F1A;
+  --text:#F4F1EB;
+  --muted:#5A6070;
+  --faint:rgba(244,241,235,.05);
+  --line:rgba(244,241,235,.08);
+  --accent:#FFD000;
+  --accent2:#FF3355;
+  --green:#00F5A0;
+}
+
+/* ─── RESET ────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{overflow-x:hidden;scroll-behavior:smooth;scroll-padding-top:60px}
+body{
+  font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+  background:var(--bg);color:var(--text);
+  -webkit-font-smoothing:antialiased;cursor:none;
+  overflow-x:hidden;
+}
+a{color:inherit;text-decoration:none}
+strong{color:var(--text);font-weight:700}
+::selection{background:rgba(255,208,0,.25)}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-thumb{background:var(--accent)}
+
+
+/* Translucent section BGs so aurora shows through */
+#skills,#projects,#certifications{background:rgba(250,250,242,.88)}
+#experience,#education,#contact,footer{background:rgba(242,237,224,.9)}
+.ticker{background:rgba(10,10,10,.96) !important}
+[data-theme="dark"] #skills,
+[data-theme="dark"] #projects,
+[data-theme="dark"] #certifications{background:rgba(10,10,16,.85)}
+[data-theme="dark"] #experience,
+[data-theme="dark"] #education,
+[data-theme="dark"] #contact,
+[data-theme="dark"] footer{background:rgba(15,15,26,.9)}
+[data-theme="dark"] .ticker{background:rgba(5,5,10,.96) !important}
+[data-theme="dark"] .sk-card{background:rgba(10,10,16,.9)}
+[data-theme="dark"] .sk-card:hover{background:#131320}
+[data-theme="dark"] nav.sc{background:rgba(10,10,16,.92)}
+[data-theme="dark"] .ctrl-btn{background:rgba(10,10,16,.92);border-color:rgba(244,241,235,.08)}
+
+/* ─── LOADER ───────────────────────────────────── */
+#loader{
+  position:fixed;inset:0;z-index:99999;
+  background:var(--accent);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:0;
+}
+#loader.out{
+  transition:opacity .6s ease,transform .6s cubic-bezier(.16,1,.3,1);
+  opacity:0;transform:translateY(-40px);pointer-events:none;
+}
+.ld-name{
+  font-size:clamp(2.5rem,8vw,6rem);font-weight:900;
+  letter-spacing:-.06em;line-height:1;
+  margin-bottom:3rem;overflow:hidden;color:#0A0A0A;
+}
+.ld-char{
+  display:inline-block;transform:translateY(110%);opacity:0;
+  animation:ldchar .5s cubic-bezier(.16,1,.3,1) forwards;
+}
+@keyframes ldchar{to{transform:translateY(0);opacity:1}}
+.ld-track{
+  width:280px;height:2px;background:rgba(0,0,0,.15);
+  position:relative;overflow:hidden;margin-bottom:.8rem;
+}
+.ld-bar{
+  height:100%;width:0%;
+  background:#0A0A0A;
+  transition:width .05s linear;
+}
+.ld-pct{
+  font-family:monospace;font-size:.65rem;letter-spacing:.18em;
+  color:rgba(0,0,0,.6);text-transform:uppercase;
+}
+
+/* ─── CURSOR ───────────────────────────────────── */
+#cd{
+  position:fixed;z-index:10000;pointer-events:none;
+  width:10px;height:10px;border-radius:50%;background:#0A0A0A;
+  transform:translate(-50%,-50%);
+  box-shadow:0 0 0 0 rgba(10,10,10,0);
+  transition:transform .15s,background .3s,width .2s,height .2s;
+}
+[data-theme="dark"] #cd{background:var(--accent);box-shadow:0 0 12px var(--accent)}
+#cd.hover{width:6px;height:6px;background:var(--accent2)}
+[data-theme="dark"] #cd.hover{background:var(--text)}
+
+/* ─── FIXED CONTROLS ──────────────────────────── */
+.fixed-controls{
+  position:fixed;bottom:2rem;right:2rem;z-index:5000;
+  display:flex;flex-direction:column;gap:.6rem;align-items:flex-end;
+}
+.ctrl-btn{
+  display:flex;align-items:center;gap:.5rem;cursor:none;
+  background:rgba(250,250,242,.92);border:1.5px solid var(--line);
+  color:var(--muted);font-family:monospace;font-size:.58rem;
+  font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+  padding:8px 14px;border-radius:50px;
+  backdrop-filter:blur(20px);transition:border-color .3s,color .3s,background .3s;
+}
+.ctrl-btn:hover{border-color:rgba(255,208,0,.6);color:#0A0A0A}
+.ctrl-btn .adot{
+  width:6px;height:6px;border-radius:50%;
+  border:1.5px solid currentColor;transition:background .3s;
+}
+#abtn.on .adot{background:var(--accent);border-color:var(--accent)}
+#tbtn .ticon{font-size:.8rem;line-height:1}
+
+/* ─── NAV ──────────────────────────────────────── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:4000;height:60px;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 5%;
+  transition:background .4s,border-color .4s;
+  border-bottom:1px solid transparent;
+}
+nav.sc{background:rgba(250,250,242,.94);backdrop-filter:blur(24px);border-color:var(--line)}
+.nav-logo{
+  font-size:.85rem;font-weight:900;letter-spacing:.12em;
+  font-family:monospace;color:var(--text);
+}
+.nav-links{display:flex;align-items:center;gap:2.5rem;list-style:none}
+.nav-links a{
+  font-family:monospace;font-size:.62rem;font-weight:700;
+  letter-spacing:.14em;text-transform:uppercase;
+  color:var(--muted);transition:color .3s;cursor:none;
+}
+.nav-links a:hover{color:var(--text)}
+.nav-links a.active{color:var(--accent2) !important}
+.nav-dl{
+  background:#0A0A0A !important;color:#FFD000 !important;
+  padding:6px 16px;border-radius:3px;font-weight:900 !important;
+  transition:opacity .3s !important;
+}
+[data-theme="dark"] .nav-dl{background:var(--accent) !important;color:#0A0A0A !important}
+.nav-dl:hover{opacity:.82}
+.ham{display:none;flex-direction:column;gap:5px;cursor:none;padding:4px}
+.ham span{display:block;width:20px;height:2px;background:var(--text);transition:.3s}
+
+/* ─── HERO ─────────────────────────────────────── */
+#hero{
+  min-height:100vh;display:flex;align-items:center;
+  padding:7rem 5% 5rem;position:relative;overflow:hidden;
+}
+#aurora{
+  position:fixed;inset:0;z-index:-1;
+  pointer-events:none;width:100%;height:100%;
+}
+.h-grid-bg{
+  position:absolute;inset:0;pointer-events:none;
+  background-image:
+    linear-gradient(var(--line) 1px,transparent 1px),
+    linear-gradient(90deg,var(--line) 1px,transparent 1px);
+  background-size:90px 90px;opacity:.35;
+}
+canvas#pcv{position:absolute;inset:0;pointer-events:none;z-index:0}
+.h-in{
+  position:relative;z-index:1;max-width:1200px;width:100%;margin:0 auto;
+  display:grid;grid-template-columns:1fr 280px;align-items:center;gap:4rem;
+}
+/* Badge */
+.h-badge{
+  display:inline-flex;align-items:center;gap:.5rem;
+  font-family:monospace;font-size:.6rem;font-weight:700;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--text);
+  background:var(--accent);padding:4px 12px;border-radius:2px;margin-bottom:1.5rem;
+}
+.h-pulse{width:6px;height:6px;border-radius:50%;background:#0A0A0A;animation:pulse 2s infinite;flex-shrink:0}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(10,10,10,.4)}70%{box-shadow:0 0 0 8px rgba(10,10,10,0)}}
+[data-theme="dark"] .h-pulse{background:var(--accent);animation:pulseDark 2s infinite}
+@keyframes pulseDark{0%,100%{box-shadow:0 0 0 0 rgba(255,208,0,.5)}70%{box-shadow:0 0 0 8px rgba(255,208,0,0)}}
+[data-theme="dark"] .h-badge{background:rgba(255,208,0,.12);color:var(--accent)}
+
+/* Name */
+.h-name{
+  font-size:clamp(4rem,10vw,8.5rem);font-weight:900;
+  letter-spacing:-.06em;line-height:.9;margin-bottom:2rem;
+}
+.hl{overflow:hidden;display:block}
+.hw{
+  display:block;
+  background:linear-gradient(160deg,#0A0A0A 50%,#444);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  transform:translateY(105%);
+  transition:transform 1s cubic-bezier(.16,1,.3,1);
+}
+[data-theme="dark"] .hw{
+  background:linear-gradient(160deg,#fff 40%,rgba(255,255,255,.5));
+  -webkit-background-clip:text;background-clip:text;
+}
+.hw.vis{transform:translateY(0)}
+.hl:nth-child(2) .hw{transition-delay:.1s}
+/* Typed */
+.h-typed{
+  font-family:monospace;font-size:.88rem;color:var(--muted);
+  letter-spacing:.04em;margin-bottom:1.5rem;min-height:1.2rem;
+}
+#tyd{color:var(--accent2);font-weight:700}
+[data-theme="dark"] #tyd{color:var(--accent)}
+.tcur{
+  display:inline-block;width:2px;height:.8em;background:var(--accent2);
+  vertical-align:middle;margin-left:2px;animation:tcb .7s step-end infinite;
+}
+[data-theme="dark"] .tcur{background:var(--accent)}
+@keyframes tcb{50%{opacity:0}}
+/* Desc */
+.h-desc{
+  font-size:.9rem;color:var(--muted);max-width:480px;
+  line-height:1.85;margin-bottom:2rem;overflow:hidden;
+}
+.h-desc-i{transform:translateY(105%);transition:transform .9s .3s cubic-bezier(.16,1,.3,1)}
+.h-desc-i.vis{transform:translateY(0)}
+/* Chips */
+.h-chips{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:2rem;opacity:0;transition:opacity .6s .5s}
+.h-chips.vis{opacity:1}
+.chip{
+  display:inline-flex;align-items:center;gap:.35rem;cursor:none;
+  background:var(--faint);border:1.5px solid var(--line);
+  color:var(--muted);padding:6px 12px;border-radius:var(--r);
+  font-family:monospace;font-size:.68rem;letter-spacing:.04em;
+  transition:border-color .3s,color .3s,transform .3s,background .3s;
+}
+.chip:hover{border-color:var(--accent);background:var(--accent);color:#0A0A0A;transform:translateY(-2px)}
+[data-theme="dark"] .chip:hover{color:#0A0A0A}
+/* Actions */
+.h-acts{display:flex;gap:.8rem;flex-wrap:wrap;opacity:0;transition:opacity .6s .65s}
+.h-acts.vis{opacity:1}
+.btn{
+  display:inline-flex;align-items:center;gap:.5rem;cursor:none;
+  padding:12px 26px;border-radius:var(--r);font-weight:800;
+  font-size:.82rem;border:none;transition:transform .3s,opacity .3s,box-shadow .3s;
+  text-decoration:none;letter-spacing:.02em;
+}
+.bp{background:#0A0A0A;color:#FFD000}
+.bp:hover{transform:translateY(-3px);box-shadow:0 8px 30px rgba(0,0,0,.18);color:#FFD000}
+[data-theme="dark"] .bp{background:var(--accent);color:#0A0A0A}
+[data-theme="dark"] .bp:hover{box-shadow:0 8px 30px rgba(255,208,0,.25);color:#0A0A0A}
+.bg{background:transparent;color:var(--text);border:2px solid var(--text)}
+.bg:hover{background:var(--text);color:var(--bg);transform:translateY(-3px)}
+/* Avatar */
+.h-vis{
+  position:relative;width:280px;height:280px;flex-shrink:0;
+  opacity:0;transition:opacity .8s .3s;
+}
+.h-vis.vis{opacity:1}
+.av-ring{
+  position:absolute;inset:-3px;border-radius:50%;
+  background:conic-gradient(from 0deg,var(--accent),var(--accent2),#FF8C00,var(--accent));
+  animation:avr 6s linear infinite;
+}
+@keyframes avr{to{transform:rotate(360deg)}}
+.av-in{
+  position:absolute;inset:3px;border-radius:50%;
+  background:var(--bg2);display:flex;align-items:center;justify-content:center;
+  font-size:5.5rem;border:1px solid var(--line);
+}
+.av-glow{
+  position:absolute;inset:-25px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,208,0,.12) 0%,transparent 65%);
+  animation:agw 3s ease-in-out infinite;
+}
+@keyframes agw{0%,100%{opacity:.5}50%{opacity:1;transform:scale(1.1)}}
+.fb{
+  position:absolute;background:rgba(250,250,242,.97);
+  border:2px solid var(--accent);border-radius:6px;
+  padding:7px 12px;font-size:.68rem;font-weight:800;
+  display:flex;align-items:center;gap:.4rem;
+  box-shadow:4px 4px 0 var(--accent);white-space:nowrap;
+  color:#0A0A0A;
+}
+[data-theme="dark"] .fb{background:rgba(12,12,20,.96);border-color:var(--line);box-shadow:0 8px 30px rgba(0,0,0,.6);color:var(--text)}
+.fb1{top:-12px;right:-45px;animation:fbf 4s ease-in-out infinite}
+.fb2{bottom:-12px;left:-45px;animation:fbf 4s ease-in-out infinite 2s}
+@keyframes fbf{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+.fb-d{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+/* Scroll cue */
+.scue{
+  position:absolute;bottom:2.5rem;left:5%;
+  display:flex;align-items:center;gap:.8rem;
+  font-family:monospace;font-size:.58rem;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--muted);
+  opacity:0;transition:opacity .6s 1.6s;
+}
+.scue.vis{opacity:1}
+.sline{width:50px;height:1px;background:var(--line);position:relative;overflow:hidden}
+.sline::after{
+  content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;
+  background:var(--accent2);animation:sla 2s ease-in-out infinite;
+}
+@keyframes sla{to{left:100%}}
+
+/* ─── TICKER ───────────────────────────────────── */
+.ticker{
+  overflow:hidden;border-top:3px solid #0A0A0A;
+  border-bottom:3px solid #0A0A0A;padding:.9rem 0;
+  background:#0A0A0A;position:relative;
+}
+[data-theme="dark"] .ticker{border-color:var(--line)}
+.ticker::before,.ticker::after{
+  content:'';position:absolute;top:0;bottom:0;width:100px;z-index:2;pointer-events:none;
+}
+.ticker::before{left:0;background:linear-gradient(90deg,#0A0A0A,transparent)}
+.ticker::after{right:0;background:linear-gradient(-90deg,#0A0A0A,transparent)}
+.t-track{display:flex;width:max-content;animation:tscroll 28s linear infinite}
+@keyframes tscroll{to{transform:translateX(-50%)}}
+.t-item{
+  display:flex;align-items:center;gap:1rem;padding:0 2.5rem;
+  border-right:1px solid rgba(255,255,255,.08);flex-shrink:0;
+}
+.t-num{
+  font-size:1.6rem;font-weight:900;letter-spacing:-.04em;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.t-info{line-height:1.15}
+.t-lbl{font-family:monospace;font-size:.55rem;letter-spacing:.15em;color:rgba(255,255,255,.4);text-transform:uppercase}
+.t-desc{font-size:.78rem;font-weight:600;color:rgba(255,255,255,.85)}
+
+/* ─── SECTION BASE ─────────────────────────────── */
+section{padding:7rem 5%}
+.si{max-width:1100px;margin:0 auto}
+.s-hd{display:flex;align-items:baseline;gap:1rem;margin-bottom:1.2rem}
+.s-num{
+  font-family:monospace;font-size:.6rem;font-weight:700;
+  letter-spacing:.18em;color:var(--muted);white-space:nowrap;
+  overflow:hidden;
+}
+.s-num-i{transform:translateX(-20px);opacity:0;transition:transform .6s cubic-bezier(.16,1,.3,1),opacity .6s}
+.s-num-i.vis{transform:none;opacity:1}
+.s-rule{
+  width:0;height:2px;background:var(--accent);
+  margin-bottom:2.5rem;
+  transition:width .9s .1s cubic-bezier(.16,1,.3,1);
+}
+.s-rule.vis{width:100%}
+.s-title{
+  font-size:clamp(2rem,5vw,3.5rem);font-weight:900;
+  letter-spacing:-.05em;line-height:1;
+  overflow:hidden;
+}
+.s-tw{
+  display:block;transform:translateY(105%);
+  transition:transform .9s .08s cubic-bezier(.16,1,.3,1);
+}
+.s-tw.vis{transform:translateY(0)}
+.aword{
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.s-sub{
+  font-size:.88rem;color:var(--muted);max-width:460px;
+  margin-top:.8rem;margin-bottom:3rem;line-height:1.8;
+  overflow:hidden;
+}
+.s-sub-i{transform:translateY(105%);transition:transform .8s .15s cubic-bezier(.16,1,.3,1)}
+.s-sub-i.vis{transform:translateY(0)}
+
+/* ─── SKILLS ───────────────────────────────────── */
+#skills{position:relative;overflow:hidden}
+.bg-wrd{
+  position:absolute;bottom:-1rem;right:-1rem;
+  font-size:22vw;font-weight:900;letter-spacing:-.1em;line-height:1;
+  color:rgba(0,0,0,.025);pointer-events:none;user-select:none;
+}
+[data-theme="dark"] .bg-wrd{color:rgba(255,255,255,.013)}
+.sk-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(295px,1fr));gap:1px;background:var(--line)}
+.sk-card{
+  background:var(--bg);padding:1.75rem 1.75rem;
+  position:relative;overflow:hidden;cursor:none;
+  transform:translateY(40px);opacity:0;
+  transition:transform .7s cubic-bezier(.16,1,.3,1),opacity .7s,background .3s;
+  border-bottom:3px solid transparent;
+}
+.sk-card.vis{transform:none;opacity:1}
+.sk-card:hover{background:var(--bg2);border-bottom-color:var(--accent)}
+.sk-hd{display:flex;align-items:center;gap:.8rem;margin-bottom:1.2rem}
+.sk-ico{font-size:1.3rem;width:36px;text-align:center;flex-shrink:0}
+.sk-nm{font-size:.85rem;font-weight:800;letter-spacing:-.01em}
+.tags{display:flex;flex-wrap:wrap;gap:.4rem}
+.tag{
+  font-family:monospace;font-size:.67rem;font-weight:700;
+  padding:4px 10px;border-radius:2px;border:1.5px solid;letter-spacing:.02em;
+}
+.tc{color:#0055BB;background:rgba(0,85,187,.07);border-color:rgba(0,85,187,.2)}
+.tp{color:#7B22CC;background:rgba(123,34,204,.07);border-color:rgba(123,34,204,.2)}
+.tg{color:#007A40;background:rgba(0,122,64,.07);border-color:rgba(0,122,64,.2)}
+.to{color:#CC3300;background:rgba(204,51,0,.07);border-color:rgba(204,51,0,.2)}
+[data-theme="dark"] .tc{color:#67e8f9;background:rgba(103,232,249,.06);border-color:rgba(103,232,249,.15)}
+[data-theme="dark"] .tp{color:#c4b5fd;background:rgba(196,181,253,.06);border-color:rgba(196,181,253,.15)}
+[data-theme="dark"] .tg{color:#6ee7b7;background:rgba(110,231,183,.06);border-color:rgba(110,231,183,.15)}
+[data-theme="dark"] .to{color:#fca5a5;background:rgba(252,165,165,.06);border-color:rgba(252,165,165,.15)}
+
+/* ─── EXPERIENCE ───────────────────────────────── */
+.exp-list{display:flex;flex-direction:column}
+.exp-card{
+  border-top:1px solid var(--line);padding:2.5rem 0;
+  position:relative;overflow:hidden;
+  transform:translateY(30px);opacity:0;
+  transition:transform .7s cubic-bezier(.16,1,.3,1),opacity .7s;
+}
+.exp-card.vis{transform:none;opacity:1}
+.exp-card:last-child{border-bottom:1px solid var(--line)}
+.exp-card::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;
+  width:3px;background:var(--accent);
+  transform:scaleY(0);transform-origin:top;
+  transition:transform .4s cubic-bezier(.16,1,.3,1);
+}
+.exp-card:hover::before{transform:scaleY(1)}
+.exp-top{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:.6rem;margin-bottom:.35rem}
+.exp-co{font-size:1.1rem;font-weight:900;letter-spacing:-.03em}
+.exp-dt{
+  font-family:monospace;font-size:.6rem;font-weight:700;letter-spacing:.12em;
+  color:var(--muted);padding:4px 12px;border:1.5px solid var(--line);
+  border-radius:2px;white-space:nowrap;
+}
+.exp-role{font-family:monospace;font-size:.7rem;color:var(--muted);letter-spacing:.08em;margin-bottom:1.5rem}
+.exp-body{display:grid;grid-template-columns:1fr auto;gap:2rem;align-items:start}
+.exp-bullets{display:flex;flex-direction:column;gap:.6rem}
+.exp-b{display:flex;gap:.7rem;align-items:flex-start}
+.exp-b-ico{color:var(--accent2);font-size:.7rem;flex-shrink:0;margin-top:.3rem;opacity:.9;font-family:monospace}
+[data-theme="dark"] .exp-b-ico{color:var(--accent)}
+.exp-b-txt{font-size:.87rem;color:var(--muted);line-height:1.7;flex:1}
+.exp-metrics{display:flex;flex-direction:column;gap:.5rem;flex-shrink:0;min-width:160px}
+.m-pill{
+  font-family:monospace;font-size:.62rem;font-weight:800;letter-spacing:.06em;
+  color:#0A0A0A;border:1.5px solid var(--accent);
+  background:var(--accent);
+  padding:4px 11px;border-radius:2px;text-align:center;white-space:nowrap;
+}
+[data-theme="dark"] .m-pill{background:rgba(255,208,0,.1);color:var(--accent);border-color:rgba(255,208,0,.3)}
+
+/* ─── PROJECTS ─────────────────────────────────── */
+.proj-grid{display:flex;flex-direction:column}
+.proj-card{
+  display:grid;grid-template-columns:120px 1fr auto;
+  align-items:start;gap:2rem;padding:2.2rem 0;
+  border-top:1px solid var(--line);cursor:none;
+  transform:translateY(30px);opacity:0;
+  transition:transform .7s cubic-bezier(.16,1,.3,1),opacity .7s,background .3s;
+  position:relative;
+}
+.proj-card.vis{transform:none;opacity:1}
+.proj-card:last-child{border-bottom:1px solid var(--line)}
+.proj-num-big{
+  font-size:4.5rem;font-weight:900;letter-spacing:-.08em;line-height:1;
+  color:rgba(10,10,10,.08);
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:rgba(10,10,10,.08);
+  transition:-webkit-text-fill-color .4s;
+}
+[data-theme="dark"] .proj-num-big{-webkit-text-fill-color:rgba(240,237,230,.1)}
+.proj-card:hover .proj-num-big{-webkit-text-fill-color:transparent}
+.proj-mid{min-width:0}
+.proj-nm{font-size:1rem;font-weight:800;letter-spacing:-.02em;margin-bottom:.7rem}
+.proj-desc{display:flex;flex-direction:column;gap:.3rem;margin-bottom:1rem}
+.proj-desc li{list-style:none;display:flex;gap:.5rem;font-size:.82rem;color:var(--muted);line-height:1.6}
+.proj-desc li::before{content:'→';color:var(--accent2);opacity:.9;flex-shrink:0;font-family:monospace;font-weight:700}
+[data-theme="dark"] .proj-desc li::before{color:var(--accent)}
+.proj-tags{display:flex;flex-wrap:wrap;gap:.35rem}
+.proj-right{display:flex;flex-direction:column;align-items:flex-end;justify-content:space-between;gap:1rem;height:100%}
+.proj-lnk{
+  font-family:monospace;font-size:.65rem;font-weight:800;letter-spacing:.1em;
+  color:var(--muted);text-transform:uppercase;
+  border:2px solid var(--line);padding:7px 14px;border-radius:2px;
+  transition:border-color .3s,color .3s,background .3s;white-space:nowrap;
+}
+.proj-lnk:hover{border-color:#0A0A0A;color:#0A0A0A;background:var(--accent)}
+[data-theme="dark"] .proj-lnk:hover{border-color:var(--accent);color:var(--accent);background:transparent}
+
+/* ─── EDUCATION ────────────────────────────────── */
+.edu-card{
+  display:flex;align-items:center;gap:2.5rem;flex-wrap:wrap;
+  padding:2.5rem;border:2px solid var(--line);border-radius:var(--r);
+  transform:scale(.97);opacity:0;
+  transition:transform .7s cubic-bezier(.16,1,.3,1),opacity .7s,border-color .3s,box-shadow .3s;
+}
+.edu-card.vis{transform:none;opacity:1}
+.edu-card:hover{border-color:var(--accent);box-shadow:4px 4px 0 var(--accent)}
+.edu-ico{
+  width:72px;height:72px;border-radius:10px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  display:flex;align-items:center;justify-content:center;font-size:2rem;flex-shrink:0;
+  box-shadow:0 8px 30px rgba(255,208,0,.25);
+}
+.edu-body{flex:1}
+.edu-deg{font-size:1.1rem;font-weight:900;letter-spacing:-.02em;margin-bottom:.3rem}
+.edu-sch{color:var(--accent2);font-weight:800;font-size:.88rem;margin-bottom:.2rem;font-family:monospace;letter-spacing:.02em}
+[data-theme="dark"] .edu-sch{color:var(--accent)}
+.edu-meta{font-family:monospace;font-size:.65rem;color:var(--muted);letter-spacing:.08em}
+.edu-score{
+  background:var(--accent);border:2px solid #0A0A0A;
+  border-radius:var(--r);padding:.9rem 1.7rem;text-align:center;flex-shrink:0;
+  box-shadow:3px 3px 0 #0A0A0A;
+}
+.edu-n{font-size:2.2rem;font-weight:900;letter-spacing:-.05em;color:#0A0A0A;display:block}
+.edu-l{font-family:monospace;font-size:.55rem;color:rgba(0,0,0,.6);text-transform:uppercase;letter-spacing:.12em}
+
+/* ─── CERTIFICATIONS ───────────────────────────── */
+.cert-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(295px,1fr));gap:1px;background:var(--line)}
+.cert-card{
+  background:var(--bg);padding:1.4rem 1.5rem;
+  display:flex;align-items:center;gap:1rem;cursor:none;
+  transform:translateX(30px);opacity:0;
+  transition:transform .6s cubic-bezier(.16,1,.3,1),opacity .6s,background .3s;
+  border-bottom:3px solid transparent;
+}
+.cert-card.vis{transform:none;opacity:1}
+.cert-card:hover{background:var(--bg2);border-bottom-color:var(--accent2)}
+.cert-card:hover .c-nm{color:var(--accent2)}
+[data-theme="dark"] .cert-card:hover .c-nm{color:var(--accent)}
+.c-ico{font-size:1.5rem;width:36px;text-align:center;flex-shrink:0}
+.c-nm{font-size:.83rem;font-weight:700;letter-spacing:-.01em;margin-bottom:.2rem;transition:color .3s}
+.c-iss{font-family:monospace;font-size:.6rem;color:var(--muted);letter-spacing:.06em}
+
+/* ─── CONTACT ──────────────────────────────────── */
+#contact{text-align:center;position:relative;overflow:hidden}
+.ct-orb{
+  position:absolute;width:700px;height:700px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,208,0,.08) 0%,transparent 65%);
+  top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;
+}
+.ct-in{position:relative;z-index:1}
+.ct-big{
+  font-size:clamp(2.5rem,8vw,6rem);font-weight:900;
+  letter-spacing:-.06em;line-height:.9;margin-bottom:1.5rem;
+}
+.ctbl{overflow:hidden}
+.ctbw{
+  display:block;transform:translateY(105%);
+  transition:transform 1s cubic-bezier(.16,1,.3,1);
+}
+.ctbl:nth-child(2) .ctbw{transition-delay:.1s}
+.ct-big.vis .ctbw{transform:translateY(0)}
+.ct-sub{
+  font-size:.9rem;color:var(--muted);max-width:400px;margin:0 auto 2.5rem;
+  line-height:1.8;overflow:hidden;
+}
+.ct-sub-i{transform:translateY(105%);transition:transform .8s .2s cubic-bezier(.16,1,.3,1)}
+.ct-sub.vis .ct-sub-i{transform:translateY(0)}
+.ct-links{
+  display:flex;justify-content:center;flex-wrap:wrap;gap:.7rem;margin-bottom:2.5rem;
+  opacity:0;transition:opacity .6s .3s;
+}
+.ct-links.vis{opacity:1}
+.ct-c{
+  display:flex;align-items:center;gap:.5rem;cursor:none;
+  background:var(--faint);border:2px solid var(--line);
+  color:var(--muted);font-family:monospace;font-size:.68rem;
+  padding:10px 16px;border-radius:var(--r);letter-spacing:.04em;
+  transition:border-color .3s,color .3s,transform .3s,background .3s;
+}
+.ct-c:hover{border-color:#0A0A0A;background:#0A0A0A;color:var(--accent);transform:translateY(-3px)}
+[data-theme="dark"] .ct-c:hover{border-color:var(--accent);background:rgba(255,208,0,.08);color:var(--accent)}
+.ct-acts{
+  display:flex;justify-content:center;gap:.8rem;flex-wrap:wrap;margin-bottom:3.5rem;
+  opacity:0;transition:opacity .6s .4s;
+}
+.ct-acts.vis{opacity:1}
+/* QR */
+.qr-wrap{
+  display:inline-flex;flex-direction:column;align-items:center;gap:1rem;
+  opacity:0;transition:opacity .7s .5s,transform .7s .5s;transform:translateY(15px);
+}
+.qr-wrap.vis{opacity:1;transform:none}
+.qr-box{
+  background:#fff;border:3px solid #0A0A0A;border-radius:6px;padding:.8rem;
+  box-shadow:5px 5px 0 var(--accent);
+  position:relative;overflow:hidden;
+}
+.qr-box img{display:block;width:160px;height:160px;border-radius:4px}
+.qr-lbl{font-family:monospace;font-size:.58rem;letter-spacing:.2em;color:var(--muted);text-transform:uppercase}
+.qr-url{font-family:monospace;font-size:.65rem;color:var(--accent2);letter-spacing:.04em;font-weight:700}
+[data-theme="dark"] .qr-url{color:var(--accent)}
+
+/* ─── FOOTER ───────────────────────────────────── */
+footer{
+  border-top:3px solid #0A0A0A;padding:1.8rem 5%;
+  background:#0A0A0A !important;
+}
+[data-theme="dark"] footer{background:rgba(5,5,12,.95) !important;border-color:var(--line)}
+.ft{
+  max-width:1100px;margin:0 auto;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;
+}
+.ft-logo{font-family:monospace;font-size:.78rem;font-weight:900;letter-spacing:.12em;color:var(--accent)}
+.ft-copy{font-family:monospace;font-size:.6rem;color:rgba(255,255,255,.35);letter-spacing:.08em}
+.ft .btn{padding:7px 16px;font-size:.75rem}
+
+/* ─── REVEAL ───────────────────────────────────── */
+[data-v]{transition-property:transform,opacity;transition-timing-function:cubic-bezier(.16,1,.3,1);transition-duration:.7s}
+
+/* ─── RESPONSIVE ───────────────────────────────── */
+@media(max-width:768px){
+  .nav-links{
+    display:none;flex-direction:column;position:absolute;top:60px;left:0;right:0;
+    background:rgba(250,250,242,.98);padding:1.5rem 5%;
+    border-bottom:2px solid var(--line);gap:1.2rem;
+  }
+  [data-theme="dark"] .nav-links{background:rgba(10,10,16,.97)}
+  .nav-links.open{display:flex}
+  .ham{display:flex}
+  .h-in{grid-template-columns:1fr;gap:2.5rem;text-align:center}
+  .h-in>*:last-child{order:-1}
+  .h-chips,.h-acts{justify-content:center}
+  .h-desc{margin-left:auto;margin-right:auto}
+  .h-vis{width:180px;height:180px;margin:0 auto}
+  .fb1,.fb2{display:none}
+  .proj-card{grid-template-columns:60px 1fr;gap:1rem}
+  .proj-right{display:none}
+  .proj-num-big{font-size:2.5rem}
+  .exp-body{grid-template-columns:1fr}
+  .exp-metrics{flex-direction:row;flex-wrap:wrap}
+  .edu-card{flex-direction:column;text-align:center}
+  .edu-score{margin:0}
+  .ft{flex-direction:column;text-align:center}
+  body{cursor:auto}
+  #cd{display:none}
+  .fixed-controls{bottom:1rem;right:1rem}
+  .ctrl-btn{font-size:.52rem;padding:6px 11px}
+}
+</style>
 </head>
-<body data-spy="scroll" data-target=".navbar" data-offset="40" id="home">
-    <!-- <a href="components.html" class="btn btn-primary btn-component" data-spy="affix" data-offset-top="600"><i class="ti-shift-left-alt"></i> Components</a> -->
-    <header class="header">
-        <div class="container">
-            <ul class="social-icons pt-3">
-                <li class="social-item"><a class="social-link text-light" href="https://www.facebook.com/amish.singh.39750/"><i class="ti-facebook" aria-hidden="true"></i></a></li>
-                <li class="social-item"><a class="social-link text-light" href="https://x.com/AmishSinghRaj10"><i class="ti-twitter" aria-hidden="true"></i></a></li>
-                <li class="social-item"><a class="social-link text-light" href="mailto:amishsingh1210@gmail.com"><i class="ti-google" aria-hidden="true"></i></a></li>
-                <li class="social-item"><a class="social-link text-light" href="https://www.instagram.com/amish_singh.exe?igshid=NGExMmI2YTkyZg%3D%3D"><i class="ti-instagram" aria-hidden="true"></i></a></li>
-                <li class="social-item"><a class="social-link text-light" href="https://github.com/Amishprogrammer"><i class="ti-github" aria-hidden="true"></i></a></li>
-            </ul>  
-            <div class="header-content">
-                <h4 class="header-subtitle" >Hello, I am</h4>
-                <h1 class="header-title">Amish Singh</h1>
-                <h6 class="header-mono" >Data Analyst | Python Developer</h6>
-                <button class="btn btn-primary btn-rounded" onclick="printResume()"> <i class="ti-printer pr-2"></i>Print Resume </button> <script> function printResume() { var win = window.open("public_html/Resume (1).pdf"); win.onload = function() { win.print(); }; } </script>
-            </div>
-        </div>
-    </header>
-    <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-white" data-spy="affix" data-offset-top="510">
-        <div class="container">
-            <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse mt-sm-20 navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item">
-                        <a href="#home" class="nav-link">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#about" class="nav-link">About</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="https://github.com/Amishprogrammer/Amish/blob/b42bd48cf3ff462fcdac8a81015d57d5ed1125c7/public_html/Resume (1).pdf" class="nav-link">Resume</a>
-                    </li>
-                </ul>
-                <ul class="navbar-nav brand">
-                    <img src="public_html/assets/imgs/avatar.jpg" alt="" class="brand-img">
-                    <li class="brand-txt">
-                        <h5 class="brand-title">Amish Singh</h5>
-                        <div class="brand-subtitle">Data Analyst | Python Developer</div>
-                    </li>
-                </ul>
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item">
-                        <a href="#portfolio" class="nav-link">Portfolio</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#blog" class="nav-link">Blog</a>
-                    </li>
-                    <li class="nav-item last-item">
-                        <a href="#contact" class="nav-link">Contact</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-    <div class="container-fluid">
-        <div id="about" class="row about-section">
-            <div class="col-lg-4 about-card">
-                <h3 class="font-weight-light">Who am I ?</h3>
-                <span class="line mb-5"></span>
-                <h5 class="mb-3">A Python Programmer / Developer Located In Our Lovely Earth</h5>
-                <p class="mt-20">I am a proactive Computer Science and Engineering undergraduate at Kalinga Institute of Industrial Technology. With a strong foundation in Python, C/C++, and various libraries and frameworks, I have developed expertise in machine learning, data analysis, and web development. I have successfully led teams in competitions and academic projects, achieving exceptional results and delivering ahead of deadlines. My notable projects include a disease prediction system with 98% accuracy and an IoT-based anti-proxy attendance system. Certified in Google Data Analytics, AWS Cloud, and IBM Data Analysis with Python, I am passionate about leveraging machine learning and data-driven solutions to optimize workflows, enhance decision-making, and drive innovation.</p>
-                <a href="public_html/Resume (1).pdf" download="Amish_Singh_Resume.pdf"> <button class="btn btn-outline-danger"> <i class="icon-down-circled2"></i>Download My CV </button> </a>
-            </div>
-            <div class="col-lg-4 about-card">
-                <h3 class="font-weight-light">Personal Info</h3>
-                <span class="line mb-5"></span>
-                <ul class="mt40 info list-unstyled">
-                    <li><span>Birthdate</span> : 12 Oct 2003</li>
-                    <li><span>Email</span> : amishsingh1210@gmailcom</li>
-                    <li><span>Phone</span> : +91 70027 80696</li>
-                    <li><span>Skype</span> : Amish Singh </li>
-                    <li><span>Address</span> :  Prachi Enclave, Niladri Vihar, Bhubaneshwar, Odisha, IND</li>
-                </ul>
-                <ul class="social-icons pt-3">
-                    <li class="social-item"><a class="social-link" href="https://www.facebook.com/amish.singh.39750/"><i class="ti-facebook" aria-hidden="true"></i></a></li>
-                <li class="social-item"><a class="social-link" href="https://x.com/AmishSinghRaj10"><i class="ti-twitter" aria-hidden="true"></i></a></li>
-                <li class="social-item"><a class="social-link" href="mailto:amishsingh1210@gmail.com"><i class="ti-google" aria-hidden="true"></i></a></li>
-                <li class="social-item"><a class="social-link" href="https://www.instagram.com/amish_singh.exe?igshid=NGExMmI2YTkyZg%3D%3D"><i class="ti-instagram" aria-hidden="true"></i></a></li>
-                <li class="social-item"><a class="social-link" href="https://github.com/Amishprogrammer"><i class="ti-github" aria-hidden="true"></i></a></li>
-                </ul>  
-            </div>
-            <div class="col-lg-4 about-card">
-                <h3 class="font-weight-light">My Expertise</h3>
-                <span class="line mb-5"></span>
-                <div class="row">
-                    <div class="col-1 text-danger pt-1"><i class="ti-widget icon-lg"></i></div>
-                    <div class="col-10 ml-auto mr-3">
-                        <h6>Data Analytics</h6>
-                        <p class="subtitle">Google and IBM Certified Data Analyst.</p>
-                        <hr>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-1 text-danger pt-1"><i class="ti-paint-bucket icon-lg"></i></div>
-                    <div class="col-10 ml-auto mr-3">
-                        <h6>Python Development</h6>
-                        <p class="subtitle">Have been developing in python for last 5 years and have a strong grasp in it.</p>
-                        <hr>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-1 text-danger pt-1"><i class="ti-stats-up icon-lg"></i></div>
-                    <div class="col-10 ml-auto mr-3">
-                        <h6>Web Development</h6>
-                        <p class="subtitle">Have worked on many projects with web implementations.</p>
-                        <hr>
-                    </div>
-                </div>
-            </div>
-        </div>
+<body>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="ld-name" id="ldname"></div>
+  <div class="ld-track"><div class="ld-bar" id="ldbar"></div></div>
+  <div class="ld-pct" id="ldpct">0%</div>
+</div>
+
+<!-- Aurora background -->
+<canvas id="aurora"></canvas>
+
+<!-- CURSOR -->
+<div id="cd"></div>
+
+<!-- FIXED CONTROLS -->
+<div class="fixed-controls">
+  <button id="tbtn" class="ctrl-btn" aria-label="Toggle theme">
+    <span class="ticon" id="ticon">☾</span>
+    <span id="tlbl">DARK</span>
+  </button>
+  <button id="abtn" class="ctrl-btn" aria-label="Toggle ambient audio">
+    <div class="adot"></div>
+    <span id="albl">SOUND</span>
+  </button>
+</div>
+
+<!-- NAV -->
+<nav id="nav">
+  <span class="nav-logo">AMISH·SINGH</span>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#education">Education</a></li>
+    <li><a href="#certifications">Certs</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="Resume_Amish.pdf" download class="nav-dl">Resume ↓</a></li>
+  </ul>
+  <div class="ham" id="ham"><span></span><span></span><span></span></div>
+</nav>
+
+<!-- VIRTUAL SCROLL WRAPPER -->
+<div id="vs">
+
+<!-- HERO -->
+<section id="hero">
+  <div class="h-grid-bg"></div>
+  <canvas id="pcv"></canvas>
+  <div class="h-in">
+    <div>
+      <div class="h-badge"><div class="h-pulse"></div>Available for Opportunities</div>
+      <h1 class="h-name">
+        <span class="hl"><span class="hw" id="hw1">Amish</span></span>
+        <span class="hl"><span class="hw" id="hw2">Singh</span></span>
+      </h1>
+      <div class="h-typed"><span id="tyd"></span><span class="tcur"></span></div>
+      <div class="h-desc"><div class="h-desc-i" id="hdesc">
+        Designing scalable data ingestion systems, distributed scraping architectures,
+        and production-grade backend services — reliability, observability, high-throughput automation.
+      </div></div>
+      <div class="h-chips" id="hchips">
+        <a href="tel:+917002780696" class="chip">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.63A2 2 0 012 .18h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 7.91a16 16 0 006.16 6.16l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+          +91-7002780696
+        </a>
+        <a href="mailto:amishsingh1210@gmail.com" class="chip">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          amishsingh1210@gmail.com
+        </a>
+        <a href="https://github.com/Amishprogrammer" target="_blank" class="chip">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+          Amishprogrammer
+        </a>
+        <a href="https://linkedin.com/in/amish-singh" target="_blank" class="chip">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+          LinkedIn
+        </a>
+      </div>
+      <div class="h-acts" id="hacts">
+        <a href="Resume_Amish.pdf" download class="btn bp">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download Resume
+        </a>
+        <a href="#contact" class="btn bg">Let's Talk →</a>
+      </div>
     </div>
-
-    <!--Resume Section-->
-    <section class="section" id="resume">
-        <div class="container">
-            <h2 class="mb-5"><span class="text-danger">My</span> Resume</h2>
-            <div class="row">
-                <div class="col-md-6 col-lg-4">
-                    <div class="card">
-                       <div class="card-header">
-                            <div class="mt-2">
-                                <h4>Expertise</h4>
-                                <span class="line"></span>  
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <h6 class="title text-danger">2019 - Present</h6>
-                            <P>Python Developer</P>
-                            <P class="subtitle">Have created multiple projects utilizing Python, implementing Machine Learning, AI, Web Frameworks, Data Analysis, and many more.</P>
-                            <hr>
-                            <h6 class="title text-danger">2023 - 2024</h6>
-                            <P>Business Analytics</P>
-                            <P class="subtitle">Have learned and applied this skill to develop small scaled businesses.</P>
-                            <hr>
-                            <h6 class="title text-danger">2023 - Present</h6>
-                            <P>Machine learning</P>
-                            <P class="subtitle">Created cutting edge machine learning models and projects to solve real world issues..</P>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-4">
-                    <div class="card">
-                       <div class="card-header">
-                            <div class="mt-2">
-                                <h4>Education</h4>
-                                <span class="line"></span>  
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <h6 class="title text-danger">2021 - Present</h6>
-                            <P>B.Tech. Computer Science and Engineering</P>
-                            <P class="subtitle">Kalinga Institute of Industrial Technology, Bhubaneshwar, Odisha, IND           3.14 GPA(out of 4)</P>
-                            <hr>
-                            <h6 class="title text-danger">2020 - 2021</h6>
-                            <P>High School Degree</P>
-                            <P class="subtitle">Miles Bronson Residential School, Guwahati, Assam, IND           82.6%</P>
-                            
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="card">
-                       <div class="card-header">
-                            <div class="pull-left">
-                                <h4 class="mt-2">Skills</h4>
-                                <span class="line"></span>  
-                            </div>
-                        </div>
-                        <div class="card-body pb-2">
-                           <h6>HTML &amp; CSS</h6>
-                            <div class="progress mb-3">
-                                <div class="progress-bar bg-danger" role="progressbar" style="width: 70%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                            <h6>JavaScript</h6>
-                            <div class="progress mb-3">
-                                <div class="progress-bar bg-danger" role="progressbar" style="width: 50%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                            <h6>Python</h6>
-                            <div class="progress mb-3">
-                                <div class="progress-bar bg-danger" role="progressbar" style="width: 80%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                            <h6>SQL</h6>
-                            <div class="progress mb-3">
-                                <div class="progress-bar bg-danger" role="progressbar" style="width: 70%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                            <h6>Power BI</h6>
-                            <div class="progress mb-3">
-                                <div class="progress-bar bg-danger" role="progressbar" style="width: 70%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                            <h6>Tableau</h6>
-                            <div class="progress mb-3">
-                                <div class="progress-bar bg-danger" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                            <h6>Machine Learning</h6>
-                            <div class="progress mb-3">
-                                <div class="progress-bar bg-danger" role="progressbar" style="width: 65%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                            <h6>IoT</h6>
-                            <div class="progress mb-3">
-                                <div class="progress-bar bg-danger" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card">
-                       <div class="card-header">
-                            <div class="pull-left">
-                                <h4 class="mt-2">Languages</h4>
-                                <span class="line"></span>  
-                            </div>
-                        </div>
-                        <div class="card-body pb-2">
-                           <h6>English</h6>
-                            <div class="progress mb-3">
-                                <div class="progress-bar bg-danger" role="progressbar" style="width: 95%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                            <h6>Hindi</h6>
-                            <div class="progress mb-3">
-                                <div class="progress-bar bg-danger" role="progressbar" style="width: 100%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                            <h6>German</h6>
-                            <div class="progress mb-3">
-                                <div class="progress-bar bg-danger" role="progressbar" style="width: 40%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="section bg-dark text-center">
-        <div class="container">
-            <div class="row text-center">
-                <div class="col-md-6 col-lg-3">
-                    <div class="row ">
-                        <div class="col-5 text-right text-light border-right py-3">
-                            <div class="m-auto"><i class="ti-alarm-clock icon-xl"></i></div>
-                        </div>
-                        <div class="col-7 text-left py-3">
-                            <h1 class="text-danger font-weight-bold font40">1080+</h1>
-                            <p class="text-light mb-1">Hours Worked</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-3">
-                    <div class="row">
-                        <div class="col-5 text-right text-light border-right py-3">
-                            <div class="m-auto"><i class="ti-layers-alt icon-xl"></i></div>
-                        </div>
-                        <div class="col-7 text-left py-3">
-                            <h1 class="text-danger font-weight-bold font40">5</h1>
-                            <p class="text-light mb-1">Project Finished</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-3">
-                    <div class="row">
-                        <div class="col-5 text-right text-light border-right py-3">
-                            <div class="m-auto"><i class="ti-face-smile icon-xl"></i></div>
-                        </div>
-                        <div class="col-7 text-left py-3">
-                            <h1 class="text-danger font-weight-bold font40">2</h1>
-                            <p class="text-light mb-1">Happy Clients</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-3">
-                    <div class="row">
-                        <div class="col-5 text-right text-light border-right py-3">
-                            <div class="m-auto"><i class="ti-heart-broken icon-xl"></i></div>
-                        </div>
-                        <div class="col-7 text-left py-3">
-                            <h1 class="text-danger font-weight-bold font40">1k</h1>
-                            <p class="text-light mb-1">Coffee Drinked</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="section" id="service">
-        <div class="container">
-            <h2 class="mb-5 pb-4"><span class="text-danger">My</span> Services</h2>
-            <div class="row">
-                <div class="col-md-4 col-sm-6">
-                    <div class="card mb-5">
-                       <div class="card-header has-icon">
-                            <i class="ti-vector text-danger" aria-hidden="true"></i>
-                        </div>
-                        <div class="card-body px-4 py-3">
-                            <h5 class="mb-3 card-title text-dark">Software Development</h5>
-                            <P class="subtitle">I have confidence in creating softwares and systems for a vast set of uses, I am a versatile leader with team leading experiences, with a versatile mindset I have successfully conquered many complex feats. I offer IoT, Machine Learning, Artificial Intelligence, Automation, Data Management systems, and many more.</P>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4 col-sm-6">
-                    <div class="card mb-5">
-                       <div class="card-header has-icon">
-                            <i class="ti-write text-danger" aria-hidden="true"></i>
-                        </div>
-                        <div class="card-body px-4 py-3">
-                            <h5 class="mb-3 card-title text-dark">Content Writing</h5>
-                            <P class="subtitle">I have content writing experience from my club activities in college societies as Youth Red Cross, I also have experience in poetry, In professional perspective I have quite some experience in documentation of projects and works. With the vast knowledge I posses I believe I am very much suitable for such tasks.</P>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4 col-sm-6">
-                    <div class="card mb-5">
-                       <div class="card-header has-icon">
-                            <i class="ti-package text-danger" aria-hidden="true"></i>
-                        </div>
-                        <div class="card-body px-4 py-3">
-                            <h5 class="mb-3 card-title text-dark">Data Analysis</h5>
-                            <P class="subtitle">I have certified specialization in data handling, visualization, management, analytics and reporting, from both Google and IBM, which allows me to be a great asset in terms of data analytics. I know technologies such as Power BI, Tableau, Python, R, Google Sheets, Excel and SQL. With them in my arsenal I am quite confident in my work.</P>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-<!-- 
-    <section class="section bg-custom-gray" id="price">
-        <div class="container">
-            <h1 class="mb-5"><span class="text-danger">Packs</span> Pricing</h1>
-            <div class="row align-items-center">
-                <div class="col-md-6 col-lg-3">
-                    <div class="price-card text-center mb-4">
-                        <h3 class="price-card-title">Free</h3>
-                        <div class="price-card-cost">
-                            <sup class="ti-money"></sup>
-                            <span class="num">0</span>
-                            <span class="date">MO</span>
-                        </div>
-                        <ul class="list">
-                            <li class="list-item">5 <span class="text-muted">Project</span></li>
-                            <li class="list-item">1GB <span class="text-muted">Storage</span></li>
-                            <li class="list-item"><span class="text-muted">No Domain</span></li>
-                            <li class="list-item">1 <span class="text-muted">User</span></li>
-                        </ul>
-                        <button class="btn btn-primary btn-rounded w-lg">Subscribe</button>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-3">
-                    <div class="price-card text-center mb-4">
-                        <h3 class="price-card-title">Basic</h3>
-                        <div class="price-card-cost">
-                            <sup class="ti-money"></sup>
-                            <span class="num">10</span>
-                            <span class="date">MO</span>
-                        </div>
-                        <ul class="list">
-                            <li class="list-item">50 <span class="text-muted">Project</span></li>
-                            <li class="list-item">10GB <span class="text-muted">Storage</span></li>
-                            <li class="list-item">1<span class="text-muted">Domain</span></li>
-                            <li class="list-item">5 <span class="text-muted">User</span></li>
-                        </ul>
-                        <button class="btn btn-primary btn-rounded w-lg">Subscribe</button>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-3">
-                    <div class="price-card text-center price-card-requried mb-4">
-                        <h3 class="price-card-title">Exclusive</h3>
-                        <div class="price-card-cost">
-                            <sup class="ti-money"></sup>
-                            <span class="num">25</span>
-                            <span class="date">MO</span>
-                        </div>
-                        <ul class="list">
-                            <li class="list-item">150 <span class="text-muted">Project</span></li>
-                            <li class="list-item">15GB <span class="text-muted">Storage</span></li>
-                            <li class="list-item">5<span class="text-muted"> Domain</span></li>
-                            <li class="list-item">15<span class="text-muted">User</span></li>
-                        </ul>
-                        <button class="btn btn-primary btn-rounded w-lg">Subscribe</button>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-3">
-                    <div class="price-card text-center mb-4">
-                        <h3 class="price-card-title">Pro</h3>
-                        <div class="price-card-cost">
-                            <sup class="ti-money"></sup>
-                            <span class="num">99</span>
-                            <span class="date">MO</span>
-                        </div>
-                        <ul class="list">
-                            <li class="list-item">500 <span class="text-muted">Project</span></li>
-                            <li class="list-item">1000GB <span class="text-muted">Storage</span></li>
-                            <li class="list-item">10<span class="text-muted"> Domain</span></li>
-                            <li class="list-item">Unlimite<span class="text-muted">User</span></li>
-                        </ul>
-                        <button class="btn btn-primary btn-rounded w-lg">Subscribe</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section> -->
-    <section class="section bg-dark py-5">
-        <div class="container text-center">
-            <h2 class="text-light mb-5 font-weight-normal">I Am Available For FreeLance</h2>
-            <a href="mailto:amishsingh1210@gmail.com">
-                <button class="btn bg-primary w-lg">
-                    <i class="ti-printer pr-2"></i>Hire me
-                </button>
-            </a>
-        </div>
-    </section>
-
-    <!-- Portfolio Section -->
-<!--     <section class="section bg-custom-gray" id="portfolio">
-        <div class="container">
-            <h1 class="mb-5"><span class="text-danger">My</span> Portfolio</h1>
-            <div class="portfolio">
-                <div class="filters">
-                    <a href="#" data-filter=".new" class="active">
-                        New
-                    </a>
-                    <a href="#" data-filter=".advertising">
-                        Advertising
-                    </a>
-                    <a href="#" data-filter=".branding">
-                        Branding
-                    </a>
-                    <a href="#" data-filter=".web">
-                        Web
-                    </a>
-                </div>
-                <div class="portfolio-container"> 
-                    <div class="col-md-6 col-lg-4 web new">
-                        <div class="portfolio-item">
-                            <img src="public_html/assets/imgs/web-1.jpg" class="img-fluid" alt="Download free bootstrap 4 admin dashboard, free boootstrap 4 templates">
-                            <div class="content-holder">
-                                <a class="img-popup" href="assets/imgs/web-1.jpg"></a>
-                                <div class="text-holder">
-                                    <h6 class="title">WEB</h6>
-                                    <p class="subtitle">Expedita corporis doloremque velit in totam!</p>
-                                </div>
-                            </div>   
-                        </div>             
-                    </div>
-                    <div class="col-md-6 col-lg-4 web new">
-                        <div class="portfolio-item">
-                            <img src="public_html/assets/imgs/web-2.jpg" class="img-fluid" alt="Download free bootstrap 4 admin dashboard, free boootstrap 4 templates">
-                            <div class="content-holder">
-                                <a class="img-popup" href="assets/imgs/web-2.jpg"></a>
-                                <div class="text-holder">
-                                    <h6 class="title">WEB</h6>
-                                    <p class="subtitle">Expedita corporis doloremque velit in totam!</p>
-                                </div>
-                            </div> 
-                        </div>                         
-                    </div>
-                    <div class="col-md-6 col-lg-4 advertising new">
-                        <div class="portfolio-item">
-                            <img src="public_html/assets/imgs/advertising-2.jpg" class="img-fluid" alt="Download free bootstrap 4 admin dashboard, free boootstrap 4 templates">                         
-                            <div class="content-holder">
-                                <a class="img-popup" href="assets/imgs/advertising-2.jpg"></a>
-                                <div class="text-holder">
-                                    <h6 class="title">ADVERSTISING</h6>
-                                    <p class="subtitle">Expedita corporis doloremque velit in totam!</p>
-                                </div>
-                            </div>    
-                        </div>              
-                    </div> 
-                    <div class="col-md-6 col-lg-4 web">
-                        <div class="portfolio-item">
-                            <img src="public_html/assets/imgs/web-4.jpg" class="img-fluid" alt="Download free bootstrap 4 admin dashboard, free boootstrap 4 templates">
-                            <div class="content-holder">
-                                <a class="img-popup" href="assets/imgs/web-4.jpg"></a>
-                                <div class="text-holder">
-                                    <h6 class="title">WEB</h6>
-                                    <p class="subtitle">Expedita corporis doloremque velit in totam!</p>
-                                </div>
-                            </div>
-                        </div>                                                     
-                    </div>
-
-                    <div class="col-md-6 col-lg-4 advertising"> 
-                        <div class="portfolio-item">
-                            <img src="public_html/assets/imgs/advertising-1.jpg" class="img-fluid" alt="Download free bootstrap 4 admin dashboard, free boootstrap 4 templates">                               
-                            <div class="content-holder">
-                                <a class="img-popup" href="assets/imgs/advertising-1.jpg"></a>
-                                <div class="text-holder">
-                                    <h6 class="title">ADVERSITING</h6>
-                                    <p class="subtitle">Expedita corporis doloremque velit in totam!</p>
-                                </div>
-                            </div>
-                        </div>                                                       
-                    </div> 
-                    <div class="col-md-6 col-lg-4 web new">
-                        <div class="portfolio-item">
-                            <img src="public_html/assets/imgs/web-3.jpg" class="img-fluid" alt="Download free bootstrap 4 admin dashboard, free boootstrap 4 templates">  
-                           <div class="content-holder">
-                                <a class="img-popup" href="assets/imgs/web-3.jpg"></a>
-                                <div class="text-holder">
-                                    <h6 class="title">WEB</h6>
-                                    <p class="subtitle">Expedita corporis doloremque velit in totam!</p>
-                                </div>
-                            </div>
-                        </div>                                                     
-                    </div>
-                    <div class="col-md-6 col-lg-4 advertising new">
-                        <div class="portfolio-item">
-                            <img src="public_html/assets/imgs/advertising-3.jpg" class="img-fluid" alt="Download free bootstrap 4 admin dashboard, free boootstrap 4 templates">       
-                           <div class="content-holder">
-                                <a class="img-popup" href="assets/imgs/advertising-3.jpg"></a>
-                                <div class="text-holder">
-                                    <h6 class="title">ADVERSITING</h6>
-                                    <p class="subtitle">Expedita corporis doloremque velit in totam!</p>
-                                </div>
-                            </div>
-                        </div>                                                       
-                    </div> 
-                    <div class="col-md-6 col-lg-4 advertising new"> 
-                        <div class="portfolio-item">
-                            <img src="public_html/assets/imgs/advertising-4.jpg" class="img-fluid" alt="Download free bootstrap 4 admin dashboard, free boootstrap 4 templates">            
-                            <div class="content-holder">
-                                <a class="img-popup" href="assets/imgs/advertising-4.jpg"></a>
-                                <div class="text-holder">
-                                    <h6 class="title">ADVERTISING</h6>
-                                    <p class="subtitle">Expedita corporis doloremque velit in totam!</p>
-                                </div>
-                            </div>
-                        </div>
-                                
-                    </div> 
-                    <div class="col-md-6 col-lg-4 branding new">
-                        <div class="portfolio-item">
-                            <img src="public_html/assets/imgs/branding-1.jpg" class="img-fluid" alt="Download free bootstrap 4 admin dashboard, free boootstrap 4 templates">                        
-                            <div class="content-holder">
-                                <a class="img-popup" href="assets/imgs/branding-1.jpg"></a>
-                                <div class="text-holder">
-                                    <h6 class="title">BRANDING</h6>
-                                    <p class="subtitle">Expedita corporis doloremque velit in totam!</p>
-                                </div>
-                            </div> 
-                        </div>
-                    </div> 
-                    <div class="col-md-6 col-lg-4 branding">
-                        <div class="portfolio-item">
-                            <img src="public_html/assets/imgs/branding-2.jpg" class="img-fluid" alt="Download free bootstrap 4 admin dashboard, free boootstrap 4 templates">  
-                            <div class="content-holder">
-                                <a class="img-popup" href="assets/imgs/branding-2.jpg"></a>
-                                <div class="text-holder">
-                                    <h6 class="title">BRANDING</h6>
-                                    <p class="subtitle">Expedita corporis doloremque velit in totam!</p>
-                                </div>
-                            </div>
-                        </div>                                                     
-                    </div> 
-                    <div class="col-md-6 col-lg-4 branding new">
-                        <div class="portfolio-item">
-                            <img src="public_html/assets/imgs/branding-3.jpg" class="img-fluid" alt="Download free bootstrap 4 admin dashboard, free boootstrap 4 templates">   
-                            <div class="content-holder">
-                                <a class="img-popup" href="assets/imgs/branding-3.jpg"></a>
-                                <div class="text-holder">
-                                    <h6 class="title">BRANDING</h6>
-                                    <p class="subtitle">Expedita corporis doloremque velit in totam!</p>
-                                </div>
-                            </div>
-                        </div>                                                    
-                    </div> 
-                    <div class="col-md-6 col-lg-4 branding">
-                        <div class="portfolio-item">
-                            <img src="public_html/assets/imgs/branding-4.jpg" class="img-fluid" alt="Download free bootstrap 4 admin dashboard, free boootstrap 4 templates">                      
-                            <div class="content-holder">
-                                <a class="img-popup" href="assets/imgs/branding-4.jpg"></a>
-                                <div class="text-holder">
-                                    <h6 class="title">BRANDING</h6>
-                                    <p class="subtitle">Expedita corporis doloremque velit in totam!</p>
-                                </div>
-                            </div>
-                        </div>                                                      
-                    </div> 
-                    <div class="col-md-6 col-lg-4 branding">
-                        <div class="portfolio-item">
-                            <img src="public_html/assets/imgs/branding-5.jpg" class="img-fluid" alt="Download free bootstrap 4 admin dashboard, free boootstrap 4 templates">          
-                            <div class="content-holder">
-                                <a class="img-popup" href="assets/imgs/branding-5.jpg"></a>
-                                <div class="text-holder">
-                                    <h6 class="title">BRANDING</h6>
-                                    <p class="subtitle">Expedita corporis doloremque velit in totam!</p>
-                                </div>
-                            </div>
-                        </div>                                                   
-                    </div>
-                </div> 
-            </div>  
-        </div>            
-    </section>
-    <!-- End of portfolio section -->
-
-    <!-- <section class="section" id="blog">
-        <div class="container">
-            <h2 class="mb-5">Latest <span class="text-danger">News</span></h2>
-            <div class="row">
-                <div class="blog-card">
-                    <div class="img-holder">
-                        <img src="assets/imgs/blog1.jpg" alt="Download free bootstrap 4 landing page, free boootstrap 4 templates, Download free bootstrap 4.1 landing page, free boootstrap 4.1.1 templates, meyawo Landing page">
-                    </div>
-                    <div class="content-holder">
-                        <h6 class="title">Consectetur adipisicing elit</h6>
-
-                        <p class="post-details">
-                            <a href="#">By: Admin</a>
-                            <a href="#"><i class="ti-heart text-danger"></i> 234</a>
-                            <a href="#"><i class="ti-comment"></i> 123</a>
-                        </p>
-                        
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet nesciunt qui sit velit delectus voluptates, repellat ipsum culpa id deleniti. Rerum debitis facilis accusantium neque numquam mollitia modi quasi distinctio.</p>
-
-                        <p><b>Necessitatibus nihil impedit! Ex nisi eveniet, dolor aliquid consequuntur repudiandae.</b></p>
-                        <p>Magnam in repellat enim harum omnis aperiam! Explicabo illo, commodi, dolor blanditiis cupiditate harum nisi vero accusamus laudantium voluptatibus dolores quae obcaecati.</p>
-
-                        <a href="#" class="read-more">Read more <i class="ti-angle-double-right"></i></a>
-                    </div>
-                </div>
-
-                <div class="blog-card">
-                    <div class="img-holder">
-                        <img src="assets/imgs/blog2.jpg" alt="Download free bootstrap 4 landing page, free boootstrap 4 templates, Download free bootstrap 4.1 landing page, free boootstrap 4.1.1 templates, meyawo Landing page">
-                    </div>
-                    <div class="content-holder">
-                        <h6 class="title">Explicabo illo</h6>
-
-                        <p class="post-details">
-                            <a href="#">By: Admin</a>
-                            <a href="#"><i class="ti-heart text-danger"></i> 456</a>
-                            <a href="#"><i class="ti-comment"></i> 264</a>
-                        </p>
-                        
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Impedit excepturi laborum enim, vitae ipsam atque eum, ad iusto consequuntur voluptas, esse doloribus. Perferendis porro quisquam vitae exercitationem aliquid, minus eos laborum repudiandae, cumque debitis iusto omnis praesentium? Laborum placeat sit adipisci illum tempore maxime, esse qui quae? Molestias excepturi corporis similique doloribus. Esse vitae earum architecto nulla non dolores illum at perspiciatis quod, et deleniti cupiditate reiciendis harum facere, delectus eum commodi soluta distinctio sit repudiandae possimus sunt. Ipsum, rem.</p>
-
-                        <a href="#" class="read-more">Read more <i class="ti-angle-double-right"></i></a>
-                    </div>
-                </div>
-                <div class="blog-card">
-                    <div class="img-holder">
-                        <img src="assets/imgs/blog3.jpg" alt="Download free bootstrap 4 landing page, free boootstrap 4 templates, Download free bootstrap 4.1 landing page, free boootstrap 4.1.1 templates, meyawo Landing page">
-                    </div>
-                    <div class="content-holder">
-                        <h4 class="title">Porro Quisqua</h4>
-
-                        <p class="post-details">
-                            <a href="#">By: Admin</a>
-                            <a href="#"><i class="ti-heart text-danger"></i> 431</a>
-                            <a href="#"><i class="ti-comment"></i> 312</a>
-                        </p>
-                        
-                        <p> consectetur adipisicing elit. Impedit excepturi laborum enim, vitae ipsam atque eum, ad iusto consequuntur voluptas, esse doloribus. Perferendis porro quisquam vitae exercitationem aliquid, minus eos laborum repudiandae, cumque debitis iusto omnis praesentium? Laborum placeat sit adipisci illum tempore maxime, esse qui quae? Molestias excepturi corporis similique doloribus. Esse vitae earum architecto nulla non dolores illum at perspiciatis quod, et deleniti cupiditate reiciendis harum facere, delectus eum commodi soluta distinctio sit repudiandae possimus sunt. Ipsum, rem.</p>
-
-                        <a href="#" class="read-more">Read more <i class="ti-angle-double-right"></i></a>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </section> -->
- -->
-    <div class="section contact" id="contact">
-        <div id="map" class="map"></div>
-        <div class="container">
-            <div class="row">
-                <!-- <div class="col-lg-8">
-                     <div class="contact-form-card">
-                        <h4 class="contact-title">Send a message</h4>
-                        <form action="">
-                            <div class="form-group">
-                                <input  class="form-control" type="text" placeholder="Name *" required>
-                            </div>
-                            <div class="form-group">
-                                <input class="form-control" type="email" placeholder="Email *" required>
-                            </div>
-                            <div class="form-group">
-                                <textarea class="form-control" id=" placeholder="Message *" rows="7" required></textarea>
-                            </div>
-                            <div class="form-group ">
-                                <button type="submit" class="form-control btn btn-primary" >Send Message</button>
-                            </div>
-                        </form>
-                    </div>
-                </div> -->
-                <div class="col-lg-4">
-                    <div class="contact-info-card">
-                        <h4 class="contact-title">Get in touch</h4>
-                        <div class="row mb-2">
-                            <div class="col-1 pt-1 mr-1">
-                                <i class="ti-mobile icon-md"></i>
-                            </div>
-                            <div class="col-10 ">
-                                <h6 class="d-inline">Phone : <br> <span class="text-muted">+91 70027 80696</span></h6>
-                            </div>
-                        </div>
-                        <div class="row mb-2">
-                            <div class="col-1 pt-1 mr-1">
-                                <i class="ti-map-alt icon-md"></i>
-                            </div>
-                            <div class="col-10">
-                                <h6 class="d-inline">Address :<br> <span class="text-muted">Prachi Enclave, Niladri Vihar, Bhubaneshwar, Odisha, IND</span></h6>
-                            </div>
-                        </div>
-                        <div class="row mb-2">
-                            <div class="col-1 pt-1 mr-1">
-                                <i class="ti-envelope icon-md"></i>
-                            </div>
-                            <div class="col-10">
-                                <h6 class="d-inline">Email :<br> <span class="text-muted">amishsingh1210@gmail.com</span></h6>
-                            </div>
-                        </div>
-                        <ul class="social-icons pt-4">
-                            <li class="social-item"><a class="social-link text-dark" href="https://www.facebook.com/amish.singh.39750/"><i class="ti-facebook" aria-hidden="true"></i></a></li>
-                            <li class="social-item"><a class="social-link text-dark" href="https://x.com/AmishSinghRaj10"><i class="ti-twitter" aria-hidden="true"></i></a></li>
-                            <li class="social-item"><a class="social-link text-dark" href="mailto:amishsingh1210@gmail.com"><i class="ti-google" aria-hidden="true"></i></a></li>
-                            <li class="social-item"><a class="social-link text-dark" href="https://www.instagram.com/amish_singh.exe?igshid=NGExMmI2YTkyZg%3D%3D"><i class="ti-instagram" aria-hidden="true"></i></a></li>
-                            <li class="social-item"><a class="social-link text-dark" href="https://github.com/Amishprogrammer"><i class="ti-github" aria-hidden="true"></i></a></li>
-                        </ul> 
-                    </div>
-                </div>
-            </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        </div>
+    <div class="h-vis" id="hvis">
+      <div class="av-glow"></div>
+      <div class="av-ring"></div>
+      <div class="av-in">👨‍💻</div>
+      <div class="fb fb1"><div class="fb-d" style="background:#00C96A"></div>99% Uptime</div>
+      <div class="fb fb2"><div class="fb-d" style="background:#FF3355"></div>120+ hrs/wk saved</div>
     </div>
-    <footer class="footer py-3">
-        <div class="container">
-            <p class="small mb-0 text-light">
-                &copy; <script>document.write(new Date().getFullYear())</script> Created With <i class="ti-heart text-danger"></i> By <a href="http://devcrud.com" target="_blank"><span class="text-danger" title="Bootstrap 4 Themes and Dashboards">DevCRUD</span></a> 
-            </p>
+  </div>
+  <div class="scue" id="scue"><div class="sline"></div>Scroll</div>
+</section>
 
+<!-- TICKER -->
+<div class="ticker">
+  <div class="t-track">
+    <div class="t-item"><div class="t-num">99%</div><div class="t-info"><div class="t-lbl">Uptime</div><div class="t-desc">Data Availability</div></div></div>
+    <div class="t-item"><div class="t-num">120+</div><div class="t-info"><div class="t-lbl">Per Week</div><div class="t-desc">Man-hours Saved</div></div></div>
+    <div class="t-item"><div class="t-num">50k+</div><div class="t-info"><div class="t-lbl">Profiles</div><div class="t-desc">Scraped & Processed</div></div></div>
+    <div class="t-item"><div class="t-num">12k+</div><div class="t-info"><div class="t-lbl">Leads</div><div class="t-desc">High-Intent Generated</div></div></div>
+    <div class="t-item"><div class="t-num">18%</div><div class="t-info"><div class="t-lbl">Reduction</div><div class="t-desc">Data Miss Rate</div></div></div>
+    <div class="t-item"><div class="t-num">25%</div><div class="t-info"><div class="t-lbl">Boost</div><div class="t-desc">Operational Efficiency</div></div></div>
+    <div class="t-item"><div class="t-num">7.99</div><div class="t-info"><div class="t-lbl">CGPA</div><div class="t-desc">KIIT University</div></div></div>
+    <div class="t-item"><div class="t-num">6+</div><div class="t-info"><div class="t-lbl">Certs</div><div class="t-desc">Google · AWS · IBM</div></div></div>
+    <!-- duplicate for seamless loop -->
+    <div class="t-item"><div class="t-num">99%</div><div class="t-info"><div class="t-lbl">Uptime</div><div class="t-desc">Data Availability</div></div></div>
+    <div class="t-item"><div class="t-num">120+</div><div class="t-info"><div class="t-lbl">Per Week</div><div class="t-desc">Man-hours Saved</div></div></div>
+    <div class="t-item"><div class="t-num">50k+</div><div class="t-info"><div class="t-lbl">Profiles</div><div class="t-desc">Scraped & Processed</div></div></div>
+    <div class="t-item"><div class="t-num">12k+</div><div class="t-info"><div class="t-lbl">Leads</div><div class="t-desc">High-Intent Generated</div></div></div>
+    <div class="t-item"><div class="t-num">18%</div><div class="t-info"><div class="t-lbl">Reduction</div><div class="t-desc">Data Miss Rate</div></div></div>
+    <div class="t-item"><div class="t-num">25%</div><div class="t-info"><div class="t-lbl">Boost</div><div class="t-desc">Operational Efficiency</div></div></div>
+    <div class="t-item"><div class="t-num">7.99</div><div class="t-info"><div class="t-lbl">CGPA</div><div class="t-desc">KIIT University</div></div></div>
+    <div class="t-item"><div class="t-num">6+</div><div class="t-info"><div class="t-lbl">Certs</div><div class="t-desc">Google · AWS · IBM</div></div></div>
+  </div>
+</div>
 
+<!-- SKILLS -->
+<section id="skills">
+  <div class="bg-wrd">STACK</div>
+  <div class="si">
+    <div class="s-hd"><span class="s-num"><span class="s-num-i" data-v>01 — Skills</span></span><h2 class="s-title"><span class="s-tw" data-v>Technical <span class="aword">Stack</span></span></h2></div>
+    <div class="s-rule" data-v></div>
+    <div class="s-sub"><div class="s-sub-i" data-v>Full-stack of tools for building reliable, scalable data systems.</div></div>
+    <div class="sk-grid">
+      <div class="sk-card" data-v style="transition-delay:.04s"><div class="sk-hd"><div class="sk-ico">🐍</div><span class="sk-nm">Languages</span></div><div class="tags"><span class="tag tc">Python (AsyncIO)</span><span class="tag tc">SQL</span><span class="tag tc">C</span><span class="tag tc">HTML/CSS</span></div></div>
+      <div class="sk-card" data-v style="transition-delay:.08s"><div class="sk-hd"><div class="sk-ico">⚙️</div><span class="sk-nm">Backend & Systems</span></div><div class="tags"><span class="tag tp">Flask</span><span class="tag tp">RabbitMQ</span><span class="tag tp">REST APIs</span><span class="tag tp">Distributed Systems</span><span class="tag tp">Fault Tolerance</span></div></div>
+      <div class="sk-card" data-v style="transition-delay:.12s"><div class="sk-hd"><div class="sk-ico">🔄</div><span class="sk-nm">Data Engineering</span></div><div class="tags"><span class="tag tg">ETL Pipelines</span><span class="tag tg">Web Scraping</span><span class="tag tg">OCR Processing</span><span class="tag tg">Data Cleaning</span><span class="tag tg">System Design</span></div></div>
+      <div class="sk-card" data-v style="transition-delay:.16s"><div class="sk-hd"><div class="sk-ico">🗄️</div><span class="sk-nm">Databases</span></div><div class="tags"><span class="tag tc">MongoDB</span><span class="tag tc">MySQL</span></div></div>
+      <div class="sk-card" data-v style="transition-delay:.2s"><div class="sk-hd"><div class="sk-ico">🤖</div><span class="sk-nm">Data & ML</span></div><div class="tags"><span class="tag tp">Pandas</span><span class="tag tp">NumPy</span><span class="tag tp">Scikit-Learn</span><span class="tag tp">NLP</span><span class="tag tp">Power BI</span><span class="tag tp">Claude & Gemma 4</span></div></div>
+      <div class="sk-card" data-v style="transition-delay:.24s"><div class="sk-hd"><div class="sk-ico">🛠️</div><span class="sk-nm">DevOps & Tools</span></div><div class="tags"><span class="tag to">Git</span><span class="tag to">Linux</span><span class="tag to">Docker</span><span class="tag to">Queue Architectures</span></div></div>
+    </div>
+  </div>
+</section>
 
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="si">
+    <div class="s-hd"><span class="s-num"><span class="s-num-i" data-v>02 — Work Experience</span></span><h2 class="s-title"><span class="s-tw" data-v>Professional <span class="aword">Experience</span></span></h2></div>
+    <div class="s-rule" data-v></div>
+    <div class="s-sub"><div class="s-sub-i" data-v>Building production systems that hold under real-world pressure.</div></div>
+    <div class="exp-list">
 
-
-
-
-
-
-
-
-
+      <div class="exp-card" data-v style="transition-delay:.05s">
+        <div class="exp-top">
+          <span class="exp-co">Provakil (PVKL Technologies)</span>
+          <span class="exp-dt">JAN 2025 — PRESENT</span>
         </div>
-    </footer>
+        <div class="exp-role">ASSOCIATE PYTHON DEVELOPER · PUNE, INDIA</div>
+        <div class="exp-body">
+          <div class="exp-bullets">
+            <div class="exp-b"><span class="exp-b-ico">▸</span><span class="exp-b-txt">Designed and deployed <strong>distributed scraping systems</strong> for large-scale legal datasets, maintaining <strong>99% data availability</strong>.</span></div>
+            <div class="exp-b"><span class="exp-b-ico">▸</span><span class="exp-b-txt">Built <strong>fault-tolerant ETL pipelines</strong> using RabbitMQ with retry strategies and structured logging.</span></div>
+            <div class="exp-b"><span class="exp-b-ico">▸</span><span class="exp-b-txt">Implemented <strong>asynchronous workflows (AsyncIO)</strong> to maximize scraping throughput and reduce latency.</span></div>
+            <div class="exp-b"><span class="exp-b-ico">▸</span><span class="exp-b-txt">Engineered modular parsing systems for unstructured formats, reducing data miss rates by <strong>18%</strong>.</span></div>
+            <div class="exp-b"><span class="exp-b-ico">▸</span><span class="exp-b-txt">Automated PDF → structured data pipelines, saving <strong>120+ man-hours per week</strong>.</span></div>
+            <div class="exp-b"><span class="exp-b-ico">▸</span><span class="exp-b-txt">Integrating <strong>Claude & Gemma 4</strong> AI models into institutional legal workflow pipelines.</span></div>
+          </div>
+          <div class="exp-metrics">
+            <div class="m-pill">99% Uptime</div>
+            <div class="m-pill">18% Miss Rate ↓</div>
+            <div class="m-pill">120+ hrs/wk</div>
+          </div>
+        </div>
+      </div>
 
+      <div class="exp-card" data-v style="transition-delay:.12s">
+        <div class="exp-top">
+          <span class="exp-co">Sharma Enterprises</span>
+          <span class="exp-dt">MAY 2023 — NOV 2024</span>
+        </div>
+        <div class="exp-role">BUSINESS ANALYST (FREELANCE) · REMOTE</div>
+        <div class="exp-body">
+          <div class="exp-bullets">
+            <div class="exp-b"><span class="exp-b-ico">▸</span><span class="exp-b-txt">Built a <strong>Transport Management System (TMS)</strong> with Power BI dashboards for real-time logistics tracking.</span></div>
+            <div class="exp-b"><span class="exp-b-ico">▸</span><span class="exp-b-txt">Optimized supply chain workflows, improving operational efficiency by <strong>25%</strong> through data-driven analysis.</span></div>
+          </div>
+          <div class="exp-metrics">
+            <div class="m-pill">25% Efficiency ↑</div>
+            <div class="m-pill">TMS + Power BI</div>
+          </div>
+        </div>
+      </div>
 
+    </div>
+  </div>
+</section>
 
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="si">
+    <div class="s-hd"><span class="s-num"><span class="s-num-i" data-v>03 — Projects</span></span><h2 class="s-title"><span class="s-tw" data-v>Technical <span class="aword">Projects</span></span></h2></div>
+    <div class="s-rule" data-v></div>
+    <div class="s-sub"><div class="s-sub-i" data-v>End-to-end systems tackling real engineering challenges.</div></div>
+    <div class="proj-grid">
+      <div class="proj-card" data-v style="transition-delay:.04s">
+        <div class="proj-num-big">01</div>
+        <div class="proj-mid">
+          <div class="proj-nm">Distributed Jobs & Referral Extraction Platform</div>
+          <ul class="proj-desc">
+            <li>Multi-worker scraping via RabbitMQ for distributed task orchestration</li>
+            <li>Processed 50,000+ profiles → 12,000+ high-intent leads</li>
+            <li>Checkpointing & deduplication for fault-tolerant resumability</li>
+          </ul>
+          <div class="proj-tags"><span class="tag tc">Python</span><span class="tag tp">RabbitMQ</span><span class="tag tg">ETL</span></div>
+        </div>
+        <div class="proj-right"><a href="https://github.com/Amishprogrammer" target="_blank" class="proj-lnk">VIEW ↗</a></div>
+      </div>
+      <div class="proj-card" data-v style="transition-delay:.08s">
+        <div class="proj-num-big">02</div>
+        <div class="proj-mid">
+          <div class="proj-nm">WiFi MAC-Based Attendance System</div>
+          <ul class="proj-desc">
+            <li>Secure auth via MAC-based device tracking over WiFi networks</li>
+            <li>Flask backend APIs + MySQL for automated attendance logging</li>
+          </ul>
+          <div class="proj-tags"><span class="tag tc">Flask</span><span class="tag tg">MySQL</span><span class="tag to">Security</span></div>
+        </div>
+        <div class="proj-right"><a href="https://github.com/Amishprogrammer" target="_blank" class="proj-lnk">VIEW ↗</a></div>
+      </div>
+      <div class="proj-card" data-v style="transition-delay:.12s">
+        <div class="proj-num-big">03</div>
+        <div class="proj-mid">
+          <div class="proj-nm">Disease → Ayurvedic Medicine System</div>
+          <ul class="proj-desc">
+            <li>NLP engine mapping symptoms to diseases via Scikit-Learn</li>
+            <li>Recommends Ayurvedic formulations from symptom clusters</li>
+          </ul>
+          <div class="proj-tags"><span class="tag tp">NLP</span><span class="tag tp">Scikit-Learn</span><span class="tag tc">Python</span></div>
+        </div>
+        <div class="proj-right"><a href="https://github.com/Amishprogrammer" target="_blank" class="proj-lnk">VIEW ↗</a></div>
+      </div>
+      <div class="proj-card" data-v style="transition-delay:.16s">
+        <div class="proj-num-big">04</div>
+        <div class="proj-mid">
+          <div class="proj-nm">Mouse Activity Capture System</div>
+          <ul class="proj-desc">
+            <li>Low-level event tracking for contextual keyboard shortcuts</li>
+            <li>Algorithm ID from clipboard, image search, live translation</li>
+          </ul>
+          <div class="proj-tags"><span class="tag tc">Python</span><span class="tag tg">Automation</span></div>
+        </div>
+        <div class="proj-right"><a href="https://github.com/Amishprogrammer" target="_blank" class="proj-lnk">VIEW ↗</a></div>
+      </div>
+    </div>
+    <div style="margin-top:3rem;border-top:1px solid var(--line);padding-top:2rem;text-align:center">
+      <a href="Resume_Amish.pdf" download class="btn bp">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download Full Resume
+      </a>
+    </div>
+  </div>
+</section>
 
+<!-- EDUCATION -->
+<section id="education">
+  <div class="si">
+    <div class="s-hd"><span class="s-num"><span class="s-num-i" data-v>04 — Education</span></span><h2 class="s-title"><span class="s-tw" data-v>Education</span></h2></div>
+    <div class="s-rule" data-v></div>
+    <div class="edu-card" data-v>
+      <div class="edu-ico">🎓</div>
+      <div class="edu-body">
+        <div class="edu-deg">B.Tech, Computer Science</div>
+        <div class="edu-sch">KALINGA INSTITUTE OF INDUSTRIAL TECHNOLOGY (KIIT)</div>
+        <div class="edu-meta">2021 — 2025 · BHUBANESWAR, INDIA</div>
+      </div>
+      <div class="edu-score">
+        <span class="edu-n">7.99</span>
+        <span class="edu-l">CGPA / 10</span>
+      </div>
+    </div>
+  </div>
+</section>
 
+<!-- CERTIFICATIONS -->
+<section id="certifications">
+  <div class="si">
+    <div class="s-hd"><span class="s-num"><span class="s-num-i" data-v>05 — Certifications</span></span><h2 class="s-title"><span class="s-tw" data-v>Certifications</span></h2></div>
+    <div class="s-rule" data-v></div>
+    <div class="s-sub"><div class="s-sub-i" data-v>Continuous upskilling across AI, cloud, and data engineering.</div></div>
+    <div class="cert-grid">
+      <div class="cert-card" data-v style="transition-delay:.04s"><div class="c-ico">🌟</div><div><div class="c-nm">Build Real World AI Apps with Gemini & Imagen</div><div class="c-iss">GOOGLE CLOUD · 2026</div></div></div>
+      <div class="cert-card" data-v style="transition-delay:.08s"><div class="c-ico">📊</div><div><div class="c-nm">Google Data Analytics Professional Certificate</div><div class="c-iss">COURSERA · 2024</div></div></div>
+      <div class="cert-card" data-v style="transition-delay:.12s"><div class="c-ico">☁️</div><div><div class="c-nm">AWS Academy Graduate — Cloud Foundations</div><div class="c-iss">AMAZON WEB SERVICES · 2024</div></div></div>
+      <div class="cert-card" data-v style="transition-delay:.16s"><div class="c-ico">🐍</div><div><div class="c-nm">Data Analysis with Python</div><div class="c-iss">IBM · 2024</div></div></div>
+      <div class="cert-card" data-v style="transition-delay:.2s"><div class="c-ico">🏦</div><div><div class="c-nm">Digital Business Services Job Simulation</div><div class="c-iss">HSBC / FORAGE · 2024</div></div></div>
+      <div class="cert-card" data-v style="transition-delay:.24s"><div class="c-ico">🧠</div><div><div class="c-nm">Advanced SQL & Machine Learning in Python</div><div class="c-iss">365 DATA SCIENCE · 2024</div></div></div>
+    </div>
+  </div>
+</section>
 
+<!-- CONTACT -->
+<section id="contact">
+  <div class="ct-orb"></div>
+  <div class="si ct-in">
+    <h2 class="ct-big" id="ctbig">
+      <div class="ctbl"><span class="ctbw">Ready to build</span></div>
+      <div class="ctbl"><span class="ctbw" style="background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">something great?</span></div>
+    </h2>
+    <div class="ct-sub" id="ctsub"><div class="ct-sub-i">Open to full-time roles in backend engineering, data engineering, or AI/ML infrastructure. Let's talk.</div></div>
+    <div class="ct-links" id="ctlinks">
+      <a href="mailto:amishsingh1210@gmail.com" class="ct-c">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        amishsingh1210@gmail.com
+      </a>
+      <a href="tel:+917002780696" class="ct-c">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.63A2 2 0 012 .18h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 7.91a16 16 0 006.16 6.16l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+        +91-7002780696
+      </a>
+      <a href="https://github.com/Amishprogrammer" target="_blank" class="ct-c">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+        github.com/Amishprogrammer
+      </a>
+    </div>
+    <div class="ct-acts" id="ctacts">
+      <a href="Resume_Amish.pdf" download class="btn bp">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download Resume
+      </a>
+      <a href="mailto:amishsingh1210@gmail.com" class="btn bg">Send an Email →</a>
+    </div>
+    <!-- QR CODE — local file -->
+    <div class="qr-wrap" id="qrwrap" data-v>
+      <div class="qr-lbl">Scan to connect</div>
+      <div class="qr-box">
+        <img src="qr-code.jpg" alt="QR Code — Connect with Amish" width="160" height="160" loading="lazy" />
+      </div>
+      <div class="qr-url">amish singh · backend engineer</div>
+    </div>
+  </div>
+</section>
 
+<!-- FOOTER -->
+<footer>
+  <div class="ft">
+    <span class="ft-logo">AMISH·SINGH</span>
+    <span class="ft-copy">© 2026 — DESIGNED & BUILT BY AMISH SINGH</span>
+    <a href="Resume_Amish.pdf" download class="btn bp">RESUME ↓</a>
+  </div>
+</footer>
 
+</div><!-- /vs -->
 
+<script>
+/* ══ 1. LOADER ══════════════════════════════════════ */
+(function initLoader() {
+  var name   = document.getElementById('ldname');
+  var bar    = document.getElementById('ldbar');
+  var pct    = document.getElementById('ldpct');
+  var loader = document.getElementById('loader');
 
+  var txt = 'AMISH SINGH';
+  var html = '';
+  for (var i = 0; i < txt.length; i++) {
+    if (txt[i] === ' ') { html += '<span style="display:inline-block;width:.3em">&nbsp;</span>'; continue; }
+    html += '<span class="ld-char" style="animation-delay:' + (i * 55) + 'ms">' + txt[i] + '</span>';
+  }
+  name.innerHTML = html;
 
+  var p = 0;
+  function step() {
+    p += Math.random() * 10 + 4;
+    if (p > 100) p = 100;
+    bar.style.width = p + '%';
+    pct.textContent = Math.floor(p) + '%';
+    if (p < 100) {
+      setTimeout(step, 45 + Math.random() * 30);
+    } else {
+      setTimeout(function() {
+        loader.classList.add('out');
+        setTimeout(function() {
+          loader.style.display = 'none';
+          revealHero();
+        }, 650);
+      }, 350);
+    }
+  }
+  setTimeout(step, 200);
+})();
 
+/* ══ 2. HERO REVEAL ═════════════════════════════════ */
+function revealHero() {
+  document.getElementById('hw1').classList.add('vis');
+  document.getElementById('hw2').classList.add('vis');
+  document.getElementById('hdesc').classList.add('vis');
+  setTimeout(function(){ document.getElementById('hchips').classList.add('vis'); }, 200);
+  setTimeout(function(){ document.getElementById('hacts').classList.add('vis'); }, 350);
+  setTimeout(function(){ document.getElementById('hvis').classList.add('vis'); }, 100);
+  setTimeout(function(){ document.getElementById('scue').classList.add('vis'); }, 800);
+  setTimeout(startTyped, 400);
+}
 
+/* ══ 3. TYPED TEXT ══════════════════════════════════ */
+function startTyped() {
+  var phrases = ['Backend Engineer','Data Engineer','Python Developer','ETL Pipeline Architect','Distributed Systems Builder','AI Integrations Engineer'];
+  var pi = 0, ci = 0, del = false;
+  var el = document.getElementById('tyd');
+  function tick() {
+    var p = phrases[pi];
+    el.textContent = del ? p.slice(0, --ci) : p.slice(0, ++ci);
+    if (!del && ci === p.length) { del = true; setTimeout(tick, 2000); return; }
+    if (del && ci === 0) { del = false; pi = (pi + 1) % phrases.length; }
+    setTimeout(tick, del ? 42 : 80);
+  }
+  tick();
+}
 
+/* ══ 4. SCROLL REVEAL ═══════════════════════════════ */
+var obs = new IntersectionObserver(function(entries) {
+  entries.forEach(function(e) {
+    if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); }
+  });
+}, { threshold: 0.08 });
+document.querySelectorAll('[data-v]').forEach(function(el) { obs.observe(el); });
 
+/* ══ 5. SCROLL ══════════════════════════════════════ */
+var IS_MOBILE = window.matchMedia('(max-width:768px)').matches || !window.matchMedia('(pointer:fine)').matches;
+var navEl = document.getElementById('nav');
 
+window.addEventListener('scroll', function() {
+  navEl.classList.toggle('sc', window.scrollY > 60);
+  updateActiveNav(window.scrollY);
+}, { passive: true });
 
+/* ══ 6. PARTICLES ═══════════════════════════════════ */
+(function initParticles() {
+  var cv = document.getElementById('pcv');
+  var cx = cv.getContext('2d');
+  var pts = [];
 
+  function resize() { cv.width = cv.offsetWidth; cv.height = cv.offsetHeight; }
 
+  function Pt() {
+    this.x  = Math.random() * cv.width;
+    this.y  = Math.random() * cv.height;
+    this.vx = (Math.random() - .5) * .35;
+    this.vy = (Math.random() - .5) * .25;
+    this.r  = Math.random() * 1 + .3;
+    this.a  = Math.random() * .25 + .05;
+    this.hue = Math.random() < .5 ? 45 : 350; /* yellow or coral */
+  }
+  Pt.prototype.step = function() {
+    this.x += this.vx; this.y += this.vy;
+    if (this.x < 0 || this.x > cv.width)  this.vx *= -1;
+    if (this.y < 0 || this.y > cv.height) this.vy *= -1;
+  };
+  Pt.prototype.draw = function() {
+    var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    var color = isDark
+      ? 'rgba(255,208,0,' + this.a + ')'
+      : 'hsla(' + this.hue + ',100%,40%,' + this.a + ')';
+    cx.beginPath(); cx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+    cx.fillStyle = color; cx.fill();
+  };
 
+  function lines() {
+    var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    for (var i = 0; i < pts.length; i++) {
+      for (var j = i + 1; j < pts.length; j++) {
+        var d = Math.hypot(pts[i].x - pts[j].x, pts[i].y - pts[j].y);
+        if (d < 100) {
+          cx.beginPath(); cx.moveTo(pts[i].x, pts[i].y); cx.lineTo(pts[j].x, pts[j].y);
+          var alpha = (isDark ? 0.06 : 0.04) * (1 - d / 100);
+          cx.strokeStyle = isDark ? 'rgba(255,208,0,' + alpha + ')' : 'rgba(0,0,0,' + alpha + ')';
+          cx.lineWidth = .5; cx.stroke();
+        }
+      }
+    }
+  }
 
+  function frame() {
+    cx.clearRect(0, 0, cv.width, cv.height);
+    pts.forEach(function(p) { p.step(); p.draw(); });
+    lines();
+    requestAnimationFrame(frame);
+  }
 
+  resize();
+  pts = Array.from({length: 55}, function() { return new Pt(); });
+  frame();
+  window.addEventListener('resize', function() {
+    resize();
+    pts = Array.from({length: 55}, function() { return new Pt(); });
+  });
+})();
 
+/* ══ 7. PROJECT CARD 3D TILT ════════════════════════ */
+document.querySelectorAll('.proj-card').forEach(function(card) {
+  card.addEventListener('mousemove', function(e) {
+    var r = card.getBoundingClientRect();
+    var x = (e.clientX - r.left - r.width / 2) / (r.width / 2);
+    var y = (e.clientY - r.top - r.height / 2) / (r.height / 2);
+    card.style.transform = 'perspective(800px) rotateX(' + (-y * 4).toFixed(1) + 'deg) rotateY(' + (x * 4).toFixed(1) + 'deg)';
+  });
+  card.addEventListener('mouseleave', function() { card.style.transform = ''; });
+});
 
+/* ══ 8. CUSTOM CURSOR ═══════════════════════════════ */
+if (!IS_MOBILE) {
+  var cd = document.getElementById('cd');
+  var mx = window.innerWidth / 2, my = window.innerHeight / 2;
+  document.addEventListener('mousemove', function(e) { mx = e.clientX; my = e.clientY; });
+  document.addEventListener('mouseleave', function() { cd.style.opacity = '0'; });
+  document.addEventListener('mouseenter', function() { cd.style.opacity = '1'; });
+  function curFrame() {
+    cd.style.left = mx + 'px'; cd.style.top = my + 'px';
+    requestAnimationFrame(curFrame);
+  }
+  curFrame();
+  document.querySelectorAll('a,button,.btn,.sk-card,.proj-card,.cert-card').forEach(function(el) {
+    el.addEventListener('mouseenter', function() { cd.classList.add('hover'); });
+    el.addEventListener('mouseleave', function() { cd.classList.remove('hover'); });
+  });
+}
 
+/* ══ 8b. ACTIVE NAV ════════════════════════════════ */
+var _sections = Array.from(document.querySelectorAll('section[id]'));
+var _navLinks  = document.querySelectorAll('.nav-links a[href^="#"]');
+function updateActiveNav(scroll) {
+  var vh = window.innerHeight;
+  var active = '';
+  _sections.forEach(function(s) { if (s.offsetTop - vh * .45 <= scroll) active = s.id; });
+  _navLinks.forEach(function(a) {
+    a.classList.toggle('active', a.getAttribute('href') === '#' + active);
+  });
+}
 
+/* ══ 8c. THEME TOGGLE ══════════════════════════════ */
+var _darkMode = false; /* START BRIGHT */
+document.getElementById('tbtn').addEventListener('click', function() {
+  _darkMode = !_darkMode;
+  document.documentElement.setAttribute('data-theme', _darkMode ? 'dark' : '');
+  document.getElementById('ticon').textContent = _darkMode ? '☀' : '☾';
+  document.getElementById('tlbl').textContent  = _darkMode ? 'LIGHT' : 'DARK';
+});
 
+/* ══ 9. NAVBAR HAMBURGER ════════════════════════════ */
+document.getElementById('ham').addEventListener('click', function() {
+  document.getElementById('navLinks').classList.toggle('open');
+});
+document.querySelectorAll('.nav-links a').forEach(function(a) {
+  a.addEventListener('click', function() { document.getElementById('navLinks').classList.remove('open'); });
+});
 
+/* ══ 10. AMBIENT AUDIO — C major uplifting pad ══════ */
+var audioCtx = null, masterGain = null, audioOn = false;
 
+function initAudio() {
+  audioCtx   = new (window.AudioContext || window.webkitAudioContext)();
+  masterGain = audioCtx.createGain();
+  masterGain.gain.value = 0;
 
+  var comp = audioCtx.createDynamicsCompressor();
+  comp.threshold.value = -20; comp.ratio.value = 4;
 
+  var lpf = audioCtx.createBiquadFilter();
+  lpf.type = 'lowpass'; lpf.frequency.value = 900;
 
+  var rev = audioCtx.createDelay(2.5);
+  var revG = audioCtx.createGain();
+  rev.delayTime.value = 0.4; revG.gain.value = 0.25;
+  rev.connect(revG); revG.connect(rev);
 
+  masterGain.connect(lpf); lpf.connect(comp);
+  comp.connect(rev); rev.connect(audioCtx.destination);
+  comp.connect(audioCtx.destination);
 
+  /* C major pad: C3 E3 G3 C4 E4 G4 — bright & uplifting */
+  [130.81, 164.81, 196.00, 261.63, 329.63, 392.00].forEach(function(f, i) {
+    var osc = audioCtx.createOscillator();
+    var g   = audioCtx.createGain();
+    osc.type = i < 3 ? 'sine' : 'triangle';
+    osc.frequency.value = f;
+    osc.detune.value = (Math.random() - .5) * 6;
+    g.gain.value = i < 2 ? .22 : .09;
 
+    var lfo = audioCtx.createOscillator();
+    var lg  = audioCtx.createGain();
+    lfo.frequency.value = .04 + Math.random() * .08;
+    lg.gain.value = f * .003;
+    lfo.connect(lg); lg.connect(osc.frequency); lfo.start();
 
+    osc.connect(g); g.connect(masterGain); osc.start();
+  });
+}
 
-	<!-- core  -->
-    <script src="public_html/assets/vendors/jquery/jquery-3.4.1.js"></script>
-    <script src="public_html/assets/vendors/bootstrap/bootstrap.bundle.js"></script>
+document.getElementById('abtn').addEventListener('click', function() {
+  if (!audioCtx) initAudio();
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+  audioOn = !audioOn;
+  masterGain.gain.cancelScheduledValues(audioCtx.currentTime);
+  masterGain.gain.setTargetAtTime(audioOn ? 0.28 : 0, audioCtx.currentTime, audioOn ? 1.8 : 0.8);
+  document.getElementById('abtn').classList.toggle('on', audioOn);
+  document.getElementById('albl').textContent = audioOn ? 'SOUND ON' : 'SOUND';
+});
 
+/* ══ 11. AURORA — multiply for bright, screen for dark ═ */
+(function initAurora() {
+  var ac = document.getElementById('aurora');
+  var ax = ac.getContext('2d');
+  var W, H;
 
+  function resize() { W = ac.width = window.innerWidth; H = ac.height = window.innerHeight; }
+  resize();
+  window.addEventListener('resize', resize);
 
-    <!-- bootstrap 3 affix -->
-    <script src="public_html/assets/vendors/bootstrap/bootstrap.affix.js"></script>
+  /* Bright-friendly blob colors */
+  var blobs = [
+    { r:0,    speed:.00028, rx:.38, ry:.30, size:.62, cr:[255,200,0],   aL:.12, aD:.18 },
+    { r:1.05, speed:.00022, rx:.30, ry:.28, size:.55, cr:[255,51,85],   aL:.09, aD:.15 },
+    { r:2.09, speed:.00019, rx:.35, ry:.25, size:.50, cr:[0,120,255],   aL:.08, aD:.13 },
+    { r:3.14, speed:.00025, rx:.28, ry:.32, size:.48, cr:[255,140,0],   aL:.07, aD:.11 },
+    { r:4.71, speed:.00016, rx:.32, ry:.22, size:.58, cr:[50,200,150],  aL:.07, aD:.12 },
+    { r:0.52, speed:.00030, rx:.25, ry:.28, size:.42, cr:[200,100,255], aL:.06, aD:.10 },
+  ];
 
-    <!-- Isotope  -->
-    <script src="public_html/assets/vendors/isotope/isotope.pkgd.js"></script>
-    
-    
-    <script src="public_html/assets/js/johndoe.js"></script>
+  function drawBlob(b) {
+    b.r += b.speed;
+    var cx = W * (.5 + b.rx * Math.sin(b.r));
+    var cy = H * (.5 + b.ry * Math.cos(b.r * 1.3));
+    var rad = Math.max(W, H) * b.size;
+    var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    var alpha = isDark ? b.aD : b.aL;
 
+    var gr = ax.createRadialGradient(cx, cy, 0, cx, cy, rad);
+    gr.addColorStop(0, 'rgba(' + b.cr[0] + ',' + b.cr[1] + ',' + b.cr[2] + ',' + alpha + ')');
+    gr.addColorStop(.5, 'rgba(' + b.cr[0] + ',' + b.cr[1] + ',' + b.cr[2] + ',' + (alpha * .3) + ')');
+    gr.addColorStop(1, 'rgba(' + b.cr[0] + ',' + b.cr[1] + ',' + b.cr[2] + ',0)');
 
+    ax.fillStyle = gr;
+    ax.beginPath();
+    ax.ellipse(cx, cy, rad, rad * .7, b.r * .3, 0, Math.PI * 2);
+    ax.fill();
+  }
+
+  function auroraFrame() {
+    var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+
+    ax.clearRect(0, 0, W, H);
+    ax.fillStyle = isDark ? '#0A0A10' : '#FAFAF2';
+    ax.fillRect(0, 0, W, H);
+
+    /* Bright = multiply (tints white bg), Dark = screen (adds light to dark bg) */
+    ax.globalCompositeOperation = isDark ? 'screen' : 'multiply';
+    blobs.forEach(drawBlob);
+    ax.globalCompositeOperation = 'source-over';
+
+    /* Vignette */
+    var vig = ax.createRadialGradient(W/2, H/2, H*.1, W/2, H/2, H*.85);
+    vig.addColorStop(0, 'rgba(0,0,0,0)');
+    vig.addColorStop(1, isDark ? 'rgba(0,0,0,.55)' : 'rgba(250,250,242,.45)');
+    ax.fillStyle = vig;
+    ax.fillRect(0, 0, W, H);
+
+    requestAnimationFrame(auroraFrame);
+  }
+  auroraFrame();
+})();
+</script>
 </body>
 </html>
